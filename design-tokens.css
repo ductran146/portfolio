@@ -1,0 +1,148 @@
+/* DIFI UI — Design Tokens (CSS custom properties)
+   Generated from design-tokens.json. Import once at root.
+   Toggle theme by adding data-theme="light" on <html> or a wrapper. */
+
+:root {
+  /* Color scales — Primary (Emerald) */
+  --color-primary-50:  #F0FDF6;
+  --color-primary-100: #DBFDEC;
+  --color-primary-200: #B9F9D9;
+  --color-primary-300: #83F2BC;
+  --color-primary-400: #31DF8B; /* base */
+  --color-primary-500: #1DCA77;
+  --color-primary-600: #12A760;
+  --color-primary-700: #12834D;
+  --color-primary-800: #146740;
+  --color-primary-900: #125537;
+  --color-primary-950: #042F1D;
+
+  /* Color scales — Warning (Amber) */
+  --color-warning-50:  #FDF9EE;
+  --color-warning-100: #FAEFCF;
+  --color-warning-200: #F4DC9C;
+  --color-warning-300: #EDC565;
+  --color-warning-400: #E0A64A; /* base */
+  --color-warning-500: #CE8C2E;
+  --color-warning-600: #B27122;
+  --color-warning-700: #8E561F;
+  --color-warning-800: #73451E;
+  --color-warning-900: #603A1C;
+  --color-warning-950: #371E0C;
+
+  /* Color scales — Danger (Red) */
+  --color-danger-50:  #FEF3F2;
+  --color-danger-100: #FDE2E0;
+  --color-danger-200: #FBC9C5;
+  --color-danger-300: #F6A29B;
+  --color-danger-400: #EF5347; /* base */
+  --color-danger-500: #E13124;
+  --color-danger-600: #C0231A;
+  --color-danger-700: #9F1D17;
+  --color-danger-800: #831C18;
+  --color-danger-900: #6D1C19;
+  --color-danger-950: #3B0B09;
+
+  --color-info:   #2882E3;
+  --color-purple: #9B7BD4;
+
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-md: 16px;
+  --font-size-lg: 17px;
+  --font-size-heading: 30px;
+  --font-size-display: 52px;
+  --line-height-tight: 1.05;
+  --line-height-normal: 1.6;
+  --letter-spacing-body: 0.25px;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-wide: 0.14em;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-16: 64px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 11px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-pill: 20px;
+  --radius-full: 9999px;
+
+  /* Control sizing (sm / md / lg) */
+  --control-h-sm: 34px;
+  --control-h-md: 42px;
+  --control-h-lg: 52px;
+  --control-pad-sm: 8px 14px;
+  --control-pad-md: 11px 20px;
+  --control-pad-lg: 15px 28px;
+
+  /* ---- Semantic theme: DARK (default) ---- */
+  --bg: #0D1219;
+  --bg-alt: #0A0E14;
+  --surface: #181E25;
+  --surface-2: #15191E;
+  --border: #343942;
+  --border-strong: #343942;
+  --focus: rgba(49,223,139,0.6);
+  --primary: var(--color-primary-400);
+  --primary-strong: #25C578;
+  --primary-dim: #0F3D2A;
+  --on-primary: #08120C;
+  --info: #2882E3;
+  --info-dim: #0E2540;
+  --warning: var(--color-warning-400);
+  --warning-dim: #3A2C13;
+  --danger: var(--color-danger-400);
+  --danger-dim: #40140F;
+  --purple-dim: #241A38;
+  --text: #EDEAE2;
+  --text-dim: #9AA3B5;
+  --text-faint: #5F6779;
+  --placeholder: #454B57;
+  --shadow-overlay: 0 24px 60px rgba(0,0,0,0.45);
+}
+
+/* ---- Semantic theme: LIGHT ---- */
+[data-theme="light"] {
+  --bg: #F3F5F8;
+  --bg-alt: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #EDF1F5;
+  --border: rgba(13,18,25,0.10);
+  --border-strong: rgba(13,18,25,0.18);
+  --focus: rgba(49,223,139,0.6);
+  --primary: #12A968;
+  --primary-strong: #0E8F58;
+  --primary-dim: #D6F5E7;
+  --on-primary: #FFFFFF;
+  --info: #2882E3;
+  --info-dim: #E1ECFB;
+  --warning: #B87A16;
+  --warning-dim: #FBF0DC;
+  --danger: #CE4A3D;
+  --danger-dim: #FCE6E3;
+  --purple-dim: #EEE8FA;
+  --text: #141B26;
+  --text-dim: #5A6473;
+  --text-faint: #98A1B0;
+  --placeholder: #C4CAD3;
+  --shadow-overlay: 0 20px 50px rgba(20,27,38,0.14);
+}
