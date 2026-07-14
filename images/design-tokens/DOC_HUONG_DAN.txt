@@ -1,0 +1,1 @@
+Đặt tên ảnh dự án theo thứ tự: 1.jpg, 2.jpg, 3.jpg, 4.jpg (tối đa 4 ảnh). Xoá file này sau khi đã thêm ảnh.
