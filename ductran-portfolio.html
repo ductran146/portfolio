@@ -70,16 +70,17 @@
   }
   .sb-top .brand{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--text-dim);}
 
+  .sb-profile{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
   .sb-avatar{
-    width:calc(100% + 72px);margin-left:-36px;margin-right:-36px;
-    aspect-ratio:398/586;border-radius:0;
+    width:64px;height:64px;flex-shrink:0;border-radius:var(--radius-md);
     display:flex;align-items:center;justify-content:center;overflow:hidden;
-    font-family:var(--display);font-size:64px;font-weight:var(--font-weight-semibold);color:var(--bg-alt);
-    margin-bottom:24px;
+    font-family:var(--display);font-size:22px;font-weight:var(--font-weight-semibold);color:var(--bg-alt);
+    background:var(--gold);
   }
   .sb-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
-  .sb-name{font-family:var(--display);font-size:26px;font-weight:var(--font-weight-semibold);}
-  .sb-role{font-family:var(--mono);font-size:var(--font-size-base);font-weight:var(--font-weight-light);color:var(--gold);letter-spacing:var(--letter-spacing-wide);text-transform:uppercase;}
+  .sb-id{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .sb-name{font-family:var(--display);font-size:18px;font-weight:var(--font-weight-semibold);}
+  .sb-role{font-family:var(--mono);font-size:11px;font-weight:var(--font-weight-light);color:var(--gold);letter-spacing:var(--letter-spacing-wide);text-transform:uppercase;}
 
   .sb-meta{margin-top:22px;display:flex;flex-direction:column;gap:12px;}
   .sb-meta a{
@@ -89,14 +90,15 @@
   .sb-meta a:hover{color:var(--gold);}
   .sb-meta svg{width:15px;height:15px;stroke:currentColor;flex-shrink:0;}
 
-  .sb-social{display:flex;gap:10px;margin-top:22px;}
-  .sb-social a{
-    width:34px;height:34px;border:1px solid var(--border-strong);border-radius:8px;
-    display:flex;align-items:center;justify-content:center;color:var(--text-dim);
-    transition:all .2s ease;
+  .sb-social{display:flex;margin-top:22px;}
+  .sb-be{display:flex;align-items:center;gap:10px;color:var(--primary);transition:opacity .2s ease;}
+  .sb-be:hover{opacity:.75;}
+  .sb-be-box{
+    width:24px;height:24px;flex-shrink:0;border:1px solid var(--primary);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;color:var(--primary);
   }
-  .sb-social a:hover{color:var(--gold);border-color:var(--gold);}
-  .sb-social svg{width:16px;height:16px;stroke:currentColor;}
+  .sb-be-box svg{width:12px;height:12px;stroke:currentColor;}
+  .sb-be-text{font-family:var(--body);font-size:13px;color:var(--primary);}
 
   .sb-cta{
     margin-top:26px;text-align:center;background:var(--gold);color:var(--bg-alt);
@@ -133,7 +135,11 @@
   /* mobile top bar */
   .mobile-bar{display:none;}
   @media (max-width:980px){
-    .sidebar{transform:translateX(-100%);transition:transform .35s ease;box-shadow:0 0 60px rgba(0,0,0,0.5);border-radius:0 var(--radius-2xl) var(--radius-2xl) 0;}
+    /* padding-top clears the fixed 66px mobile header so the sidebar's own
+       content (avatar/name at the very top) isn't hidden behind it when the
+       menu opens — without this the sidebar starts scrolled to 0 with its
+       first ~66px permanently covered by the header, unreachable by scrolling. */
+    .sidebar{transform:translateX(-100%);transition:transform .35s ease;box-shadow:0 0 60px rgba(0,0,0,0.5);border-radius:0 var(--radius-2xl) var(--radius-2xl) 0;padding-top:86px;}
     .sidebar.open{transform:translateX(0);}
     .mobile-bar{
       display:flex;align-items:center;justify-content:space-between;
@@ -143,6 +149,7 @@
     }
     .mobile-bar .brand{font-family:var(--mono);font-size:13px;letter-spacing:.08em;display:flex;align-items:center;gap:10px;}
     .mobile-bar .mark{width:32px;height:32px;border:1px solid var(--border-strong);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--display);color:var(--gold);font-weight:var(--font-weight-semibold);}
+    .mobile-bar .mark svg{width:18px;height:18px;}
     .burger{width:38px;height:38px;display:flex;flex-direction:column;justify-content:center;gap:5px;align-items:center;cursor:pointer;}
     .burger span{width:20px;height:2px;background:var(--text);display:block;transition:all .3s ease;}
     .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
@@ -274,7 +281,7 @@
   @media (min-width:981px){ .main{margin-left:calc(var(--sidebar-w) + var(--space-6) * 2);padding-right:96px;} }
 
   .wrap{max-width:900px;margin:0 auto;padding:0 56px;position:relative;z-index:1;}
-  @media (max-width:640px){ .wrap{padding:0 26px;} }
+  @media (max-width:640px){ .wrap{padding:0 16px;} }
 
   section{padding:120px 0;position:relative;}
   section::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(to right, transparent 0%, var(--border-strong) 50%, transparent 100%);}
@@ -282,6 +289,7 @@
 
   .kicker{font-family:var(--mono);font-size:12px;letter-spacing:var(--letter-spacing-wide);color:var(--gold);text-transform:uppercase;}
   h2{font-family:var(--display);font-weight:var(--font-weight-medium);font-size:clamp(30px,4vw,46px);letter-spacing:var(--letter-spacing-tight);}
+  @media (max-width:640px){ h2{font-size:22px;} }
   .section-sub{color:var(--text-dim);margin-top:18px;font-size:16px;max-width:560px;}
   .section-head{margin-bottom:56px;}
 
@@ -308,6 +316,7 @@
   .home-glow.g2{width:620px;height:620px;bottom:-180px;left:-160px;background:var(--color-purple);opacity:.26;animation:homeGlowFloat 20s ease-in-out infinite reverse;}
   @keyframes homeGlowFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-14px) scale(1.06);}}
   @media (prefers-reduced-motion: reduce){ .home-glow{animation:none;} }
+  @media (max-width:980px){ .home-glow-wrap{display:none;} }
 
   /* staggered fade-up entrance for the hero (plays on load, not on scroll) */
   @keyframes heroFadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
@@ -332,6 +341,23 @@
 
   .home-bottom{margin-top:56px;animation:heroFadeUp .8s cubic-bezier(.16,.8,.3,1) .36s both;}
   @media (prefers-reduced-motion: reduce){ .home-eyebrow,.home-desc,.home-bottom{animation:none;} }
+
+  /* mobile: #home no longer forces a 92vh floor — with the board added
+     below the stats, content is already tall enough on its own, so a fixed
+     min-height only pushes the scroll-down badge (pinned to the section's
+     bottom edge) further down, off-screen. Letting height track content,
+     plus tightening the gaps between eyebrow/title/desc/stats/board, keeps
+     the badge reachable within the first screen instead of below the fold. */
+  @media (max-width:980px){
+    /* padding-bottom is 75px on purpose: the scroll badge (110px circle)
+       is centered exactly on #home's bottom edge, so its visible top edge
+       sits 55px above that line — 75px padding leaves a true 20px gap
+       between the board above and the badge's top edge. */
+    #home{min-height:auto;padding:28px 0 75px;}
+    .home-eyebrow{margin-bottom:14px;}
+    .home-desc{margin-top:12px;}
+    .home-bottom{margin-top:24px;}
+  }
   /* sits exactly on the hero section's own bottom edge — the lowest
      possible position — replacing the generic section divider: a line
      on either side, with the badge's center pinned to that same line. */
@@ -388,8 +414,19 @@
       /* static — no floating/bobbing, the window itself never moves */
       transform:translateY(-50%) rotate(-3deg);
     }
+  }
 
-    /* static app chrome — always fully visible, never animates */
+  /* mobile variant of the same board: shown in normal document flow right
+     below the hero stats (15+ / 200+) instead of floating absolutely —
+     shares every inner class/animation below with the desktop version. */
+  .token-showcase-mobile{display:none;}
+  @media (max-width:980px){
+    .token-showcase-mobile{
+      display:block;position:static;width:100%;margin-top:20px;transform:none;
+    }
+  }
+
+  /* static app chrome — always fully visible, never animates */
     .figma-frame{
       width:100%;aspect-ratio:16/10;display:flex;flex-direction:column;
       background:var(--bg-alt);border:1px solid var(--border-strong);
@@ -619,7 +656,6 @@
       .bw-card{animation:none;opacity:1;transform:none;border-color:var(--text-faint);background:var(--surface);}
       .bw-card:first-child{border-color:var(--primary);}
     }
-  }
 
   /* ---------- ABOUT ---------- */
   .about-body p{color:var(--text-dim);margin-bottom:18px;max-width:640px;}
@@ -632,31 +668,52 @@
   /* logo + role/org/date header + bullet list, one entry per company.
      Logo images: put files in images/logos/ (see file names on each
      <img src>) — falls back to a 2-letter initial badge if missing. */
-  .exp-list{display:flex;flex-direction:column;gap:34px;}
-  .exp-item{display:flex;gap:22px;}
+  .exp-list{display:flex;flex-direction:column;gap:24px;}
+  .exp-item{
+    display:flex;flex-direction:column;gap:16px;
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:28px 26px;background:var(--surface);
+    transition:border-color .3s ease;
+  }
+  .exp-item:hover{border-color:var(--border-strong);}
+  @media (max-width:640px){ .exp-item{padding:20px;} }
+  /* logo sits beside just the role/org/date header, vertically centered
+     against that header specifically — not against the whole card
+     (bullets flow below as their own row, full width). */
+  .exp-top{display:flex;align-items:flex-start;gap:22px;}
   .exp-logo{
     width:76px;height:76px;flex-shrink:0;border:1px solid var(--border-strong);border-radius:16px;
     background:#FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden;
   }
   .exp-logo img{width:100%;height:100%;object-fit:contain;padding:10px;}
   .exp-logo-fallback{font-family:var(--display);font-size:16px;font-weight:var(--font-weight-semibold);color:var(--gold);}
-  .exp-body{flex:1;min-width:0;}
-  .exp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-  .exp-role{font-family:var(--display);font-size:19px;font-weight:var(--font-weight-semibold);color:var(--text);}
+  .exp-head{flex:1;min-width:0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .exp-role{font-family:var(--display);font-size:16px;font-weight:var(--font-weight-semibold);color:var(--text);}
   .exp-org{font-size:14px;color:var(--gold);margin-top:3px;}
   .exp-date{
     font-family:var(--mono);font-size:11.5px;color:var(--text-dim);background:var(--surface-2);
     padding:6px 14px;border-radius:var(--radius-full);white-space:nowrap;flex-shrink:0;
   }
-  .exp-bullets{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px;}
+  .exp-bullets{list-style:none;margin-top:0;display:flex;flex-direction:column;gap:9px;}
   .exp-bullets li{display:flex;gap:9px;font-size:14px;line-height:1.55;color:var(--text-dim);}
   .exp-bullets li::before{content:"›";color:var(--gold);font-weight:700;flex-shrink:0;}
-  @media (max-width:640px){ .exp-item{flex-direction:column;} .exp-logo{width:60px;height:60px;} }
+  @media (max-width:640px){ .exp-logo{width:56px;height:56px;} }
 
   /* ---------- SERVICES ---------- */
   .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
-  @media (max-width:760px){ .service-grid{grid-template-columns:1fr;} }
   .service-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:28px;padding:32px 26px;background:color-mix(in srgb, var(--surface) 50%, transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;}
+  /* mobile: same swipeable-card treatment as the AI workflow steps — each
+     card becomes a horizontal scroll-snap item instead of a stacked column,
+     peeking the next card's edge to hint there's more to swipe to. */
+  @media (max-width:760px){
+    .service-grid{
+      display:flex;gap:16px;grid-template-columns:none;
+      overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none;
+    }
+    .service-grid::-webkit-scrollbar{display:none;}
+    .service-card{flex:0 0 82%;scroll-snap-align:start;}
+  }
   .service-card:hover{border-color:var(--gold);transform:translateY(-6px);box-shadow:var(--shadow-overlay);}
   .service-card .sc-num{position:absolute;top:-10px;right:10px;font-family:var(--display);font-size:92px;font-weight:var(--font-weight-semibold);color:var(--text);opacity:.05;line-height:1;pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
   .service-card:hover .sc-num{opacity:.1;transform:translateY(-4px);}
@@ -669,7 +726,7 @@
   /* ---------- SKILLS ---------- */
   .skills-orb-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:22px;}
   @media (max-width:820px){ .skills-orb-grid{grid-template-columns:repeat(3,1fr);gap:20px;} }
-  @media (max-width:480px){ .skills-orb-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .skills-orb-grid{grid-template-columns:repeat(3,1fr);gap:14px;} }
 
   .skill-orb{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
     opacity:0;transform:translateY(22px) scale(.94);transition:opacity .6s ease, transform .6s ease;}
@@ -692,16 +749,17 @@
   .orb-shell::before{
     content:'';position:absolute;inset:0;border-radius:inherit;
     background:radial-gradient(circle at 50% 50%, var(--orb-glow, var(--primary)) 0%, transparent 65%);
-    opacity:.28;transition:opacity .3s ease;pointer-events:none;
+    opacity:.17;transition:opacity .3s ease;pointer-events:none;
   }
   .skill-orb:hover .orb-shell{
     border-color:var(--orb-glow, var(--gold));transform:translateY(-6px);
     box-shadow:0 0 0 1px var(--orb-glow, var(--gold)) inset, 0 16px 34px rgba(0,0,0,0.35);
   }
-  .skill-orb:hover .orb-shell::before{opacity:.55;}
+  .skill-orb:hover .orb-shell::before{opacity:.33;}
 
   .orb-icon{position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text);
     animation:orbFloat 3.6s ease-in-out infinite;transition:transform .3s ease;}
+  @media (max-width:480px){ .orb-icon{width:32px;height:32px;} }
   .skill-orb:hover .orb-icon{transform:scale(1.15);}
   .orb-icon svg{width:100%;height:100%;}
   .skill-orb:nth-child(2n) .orb-icon{animation-delay:.4s;}
@@ -714,11 +772,26 @@
 
   /* ---------- AI WORKFLOW ---------- */
   .ai-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:var(--radius-2xl);overflow:hidden;}
-  @media (max-width:820px){ .ai-steps{grid-template-columns:1fr;} }
   .ai-step{padding:32px 26px;border-right:1px solid var(--border);background:var(--surface);transition:background .3s ease;}
   .ai-step:last-child{border-right:none;}
-  @media (max-width:820px){ .ai-step{border-right:none;border-bottom:1px solid var(--border);} .ai-step:last-child{border-bottom:none;} }
   .ai-step:hover{background:var(--surface-2);}
+  /* mobile: each step becomes its own swipeable card in a horizontal
+     scroll-snap track (peeking the next card's edge hints there's more to
+     swipe to), instead of a stacked single column. */
+  @media (max-width:820px){
+    .ai-steps{
+      display:flex;gap:14px;grid-template-columns:none;
+      border:none;border-radius:0;overflow-x:auto;overflow-y:visible;
+      scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+      padding-bottom:6px;scrollbar-width:none;
+    }
+    .ai-steps::-webkit-scrollbar{display:none;}
+    .ai-step{
+      flex:0 0 82%;scroll-snap-align:start;
+      border:1px solid var(--border);border-radius:var(--radius-xl);
+    }
+    .ai-step:last-child{border:1px solid var(--border);}
+  }
   .ai-step .idx{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.1em;margin-bottom:14px;}
   .ai-step h4{font-family:var(--display);font-size:18px;font-weight:var(--font-weight-semibold);margin-bottom:10px;}
   .ai-step p{font-size:13.5px;color:var(--text-dim);}
@@ -804,11 +877,11 @@
   }
 
   .pv2-title{
-    display:inline-block;margin-top:18px;font-family:var(--display);font-size:19px;font-weight:var(--font-weight-semibold);
+    display:inline-block;margin-top:18px;font-family:var(--display);font-size:16px;font-weight:var(--font-weight-semibold);
     color:var(--text);text-decoration:none;
     transition:color .25s ease;
   }
-  .pv2-featured .pv2-title{font-size:24px;}
+  .pv2-featured .pv2-title{font-size:16px;}
   .pv2-card:hover .pv2-title{color:var(--gold);}
 
   /* ---------- PROJECT LIGHTBOX (xem ảnh chi tiết khi bấm vào dự án) ---------- */
@@ -895,9 +968,13 @@
      next card's edge (~1/3 of a card width) peeks in on the right, hinting
      there's more to scroll to. Step distance is measured in JS since the
      card width is a percentage, not a fixed px value. */
-  .testi-carousel{display:flex;align-items:center;justify-content:center;gap:18px;}
-  .testi-viewport{overflow:hidden;width:100%;max-width:840px;}
+  /* arrows sit in their own row BELOW the viewport (rather than beside it)
+     so the card itself can use the full section width instead of sharing
+     it with two 44px buttons + gaps. */
+  .testi-carousel{display:flex;flex-direction:column;align-items:center;gap:22px;}
+  .testi-viewport{overflow:hidden;width:100%;max-width:960px;}
   .testi-track{display:flex;gap:20px;transition:transform .45s cubic-bezier(.16,.8,.3,1);}
+  .testi-nav-row{display:flex;align-items:center;justify-content:center;gap:14px;}
   .testi-nav{
     flex-shrink:0;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-strong);
     background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;
@@ -909,8 +986,8 @@
 
   .testi-card{flex:0 0 75%;width:75%;box-sizing:border-box;border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px 30px;background:var(--surface);}
   @media (max-width:760px){ .testi-card{flex-basis:78%;width:78%;padding:26px 22px;} }
-  .testi-quote{font-size:15.5px;line-height:1.6;color:var(--text-dim);margin-bottom:24px;font-style:italic;}
-  .testi-more{display:none;background:none;border:none;padding:0;margin-left:4px;color:var(--gold);font-family:var(--body);font-size:inherit;font-style:normal;font-weight:var(--font-weight-semibold);cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
+  .testi-quote{font-size:14px;line-height:1.6;color:var(--text-dim);margin-bottom:24px;font-style:italic;}
+  .testi-more{display:none;background:none;border:none;padding:0;margin-left:4px;color:var(--gold);font-family:var(--body);font-size:12px;font-style:normal;font-weight:var(--font-weight-regular);cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
   .testi-more.is-visible{display:inline;}
   .testi-person{display:flex;align-items:center;gap:12px;}
   .testi-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;background:var(--surface-2);display:block;}
@@ -922,7 +999,7 @@
   /* ---------- CLIENTS ---------- */
   .clients-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;}
   @media (max-width:820px){ .clients-grid{grid-template-columns:repeat(3,1fr);gap:16px;} }
-  @media (max-width:480px){ .clients-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .clients-grid{grid-template-columns:repeat(3,1fr);gap:10px;} .client-logo{padding:12px;} }
   .client-logo{
     aspect-ratio:1;border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-xl);
     background:rgba(10,14,20,0.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -979,12 +1056,43 @@
   @media (max-width:480px){ .cta-modal{padding:32px 22px;} }
 
   .foot-note{padding:34px 0;font-family:var(--mono);font-size:11.5px;color:var(--text-faint);text-align:center;}
+
+  /* ---------- MOBILE DENSITY OVERRIDE ---------- */
+  /* Placed last on purpose so it always wins the cascade over every
+     earlier rule of equal specificity, regardless of where each one is
+     declared above. Tightens spacing across every module (section
+     padding, header gap, and each section's own internal gaps) on
+     mobile so more content is visible per screen without scrolling as
+     much. Anything already ≤20px is left alone. */
+  @media (max-width:760px){
+    section{padding:40px 0;}
+    /* the scroll badge (110px circle) is centered on #home's bottom edge
+       and bleeds 55px below that line into #portfolio's territory — 75px
+       padding-top leaves a true 20px gap between the badge's bottom edge
+       and the Portfolio module content that follows it. */
+    #portfolio{padding-top:75px;}
+    /* kept above 28px on purpose: .section-head carries the .reveal class,
+       which animates in from translateY(28px). A margin smaller than that
+       lets the title still be mid-animation (sitting lower than its resting
+       position) and visually overlap the content below it while scrolling. */
+    .section-head{margin-bottom:32px;}
+    .section-sub{margin-top:12px;}
+    .home-stats{gap:20px;}
+    .exp-list{gap:20px;}
+    .pv2-grid{gap:20px;}
+    .contact-shell{gap:20px;}
+    .ai-note{margin-top:20px;}
+    .skill-tags{margin-top:20px;}
+    .form-shell .f-group{margin-bottom:20px;}
+    .testi-disclaimer{margin-top:20px;}
+    .service-card .sc-illustration{margin-bottom:16px;}
+  }
 </style>
 </head>
 <body>
 
 <div class="mobile-bar">
-  <div class="brand"><span class="mark">TĐ</span> TRẦN MINH ĐỨC</div>
+  <div class="brand"><span class="mark"><svg viewBox="0 0 59 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.8" d="M14.7306 38.8849C14.7045 38.8717 14.6914 38.8453 14.6914 38.8321V21.829L5.04688 16.1965V44.5042L29.3086 58.6514V47.3865L14.7306 38.8849Z" fill="currentColor"/><path d="M54.3682 16.1965L44.7237 21.8289V38.832C44.7237 38.8584 44.7106 38.8717 44.6844 38.8849L30.1064 47.3864V58.6513L54.3682 44.5041V16.1965V16.1965Z" fill="currentColor"/><path opacity="0.8" d="M29.3085 40.908L25.7099 38.8057V32.4593C25.7099 32.4461 25.7099 32.4461 25.6968 32.4329L20.2529 29.2597V25.0552L29.3085 30.3306V40.908Z" fill="currentColor"/><path d="M30.1064 40.908L33.7051 38.8057V32.4593C33.7051 32.4461 33.7051 32.4461 33.7182 32.4329L39.1621 29.2597V25.0552L30.1064 30.3306V40.908Z" fill="currentColor"/><path opacity="0.6" d="M38.7563 24.3676L35.1577 22.2653L29.7269 25.4385C29.7138 25.4385 29.7138 25.4385 29.7007 25.4385L24.2569 22.2653L20.6582 24.3676L29.7138 29.643L38.7563 24.3676Z" fill="currentColor"/><path opacity="0.6" d="M5.45215 15.4959L15.0966 21.1283L20.0432 18.246L10.3987 12.6135L5.45215 15.4959Z" fill="currentColor"/><path opacity="0.6" d="M29.7146 1.34857L20.0439 6.98101L29.7015 12.6134C29.7146 12.6134 29.7277 12.6134 29.7277 12.6134L44.3057 21.115L53.9632 15.4826L29.7146 1.34857Z" fill="currentColor"/></svg></span> TRẦN MINH ĐỨC</div>
   <div class="mobile-bar-actions">
     <a href="ductm-information.pdf" download class="dl-cv-btn-mobile" aria-label="Download CV">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
@@ -1000,11 +1108,15 @@
   </div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="sb-avatar">
-      <img src="images/ductm.png" alt="Trần Minh Đức" onerror="this.replaceWith('TĐ')">
+    <div class="sb-profile">
+      <div class="sb-avatar">
+        <img src="images/ductm.png" alt="Trần Minh Đức" onerror="this.replaceWith('TĐ')">
+      </div>
+      <div class="sb-id">
+        <div class="sb-name">Trần Minh Đức</div>
+        <div class="sb-role">Senior UX/UI Designer</div>
+      </div>
     </div>
-    <div class="sb-name">Trần Minh Đức</div>
-    <div class="sb-role">Senior UX/UI Designer</div>
 
     <div class="sb-meta">
       <a href="mailto:ducdesign.tm@gmail.com">
@@ -1026,14 +1138,11 @@
     </div>
 
     <div class="sb-social">
-      <a href="https://behance.net/tranducdesign" target="_blank" rel="noopener" aria-label="Behance">
-        <svg viewBox="0 0 6 5" fill="none"><path d="M0.28125 2.02668V0.53664C0.28125 0.39559 0.397025 0.28125 0.539835 0.28125H1.52873C1.74868 0.28125 1.97472 0.31909 2.13862 0.46393C2.31397 0.618855 2.48402 0.858855 2.47557 1.17963C2.46577 1.55373 2.19262 1.99588 1.7924 2.02668C1.39218 2.05748 1.01615 2.02668 0.28125 2.02668ZM0.28125 2.02668V3.51793C0.28125 3.65898 0.39704 3.77318 0.539845 3.77458C1.11018 3.78003 1.44202 3.80028 1.7924 3.77333C2.19262 3.74248 2.46577 3.30033 2.47557 2.92623C2.48402 2.60548 2.31397 2.36548 2.13862 2.21053C1.97472 2.06568 1.74868 2.02783 1.52873 2.02783L0.28125 2.02668ZM5.30352 3.51693C5.08442 3.72923 4.01717 4.14883 3.63267 3.04443C3.59272 2.93418 3.56092 2.69638 3.57947 2.51268M3.57947 2.51268C3.61112 2.19988 3.74918 1.76113 4.26157 1.58208C4.99537 1.32568 5.45682 2.03743 5.57632 2.51268H3.57947ZM4.20023 0.534655H4.88033" stroke="currentColor" stroke-width="0.5625" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="#" onclick="return false;" aria-label="LinkedIn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8.3" r=".6" fill="currentColor" stroke="none"/><path d="M8 11.3v6.2"/><path d="M12.2 17.5v-3.9a2.3 2.3 0 0 1 4.6 0v3.9"/></svg>
-      </a>
-      <a href="mailto:ducdesign.tm@gmail.com" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M3.2 7.2l7.5 5.9a1.9 1.9 0 0 0 2.6 0l7.5-5.9"/></svg>
+      <a href="https://www.behance.net/tranducdesign" target="_blank" rel="noopener" class="sb-be" aria-label="Behance">
+        <span class="sb-be-box">
+          <svg viewBox="0 0 6 5" fill="none"><path d="M0.28125 2.02668V0.53664C0.28125 0.39559 0.397025 0.28125 0.539835 0.28125H1.52873C1.74868 0.28125 1.97472 0.31909 2.13862 0.46393C2.31397 0.618855 2.48402 0.858855 2.47557 1.17963C2.46577 1.55373 2.19262 1.99588 1.7924 2.02668C1.39218 2.05748 1.01615 2.02668 0.28125 2.02668ZM0.28125 2.02668V3.51793C0.28125 3.65898 0.39704 3.77318 0.539845 3.77458C1.11018 3.78003 1.44202 3.80028 1.7924 3.77333C2.19262 3.74248 2.46577 3.30033 2.47557 2.92623C2.48402 2.60548 2.31397 2.36548 2.13862 2.21053C1.97472 2.06568 1.74868 2.02783 1.52873 2.02783L0.28125 2.02668ZM5.30352 3.51693C5.08442 3.72923 4.01717 4.14883 3.63267 3.04443C3.59272 2.93418 3.56092 2.69638 3.57947 2.51268M3.57947 2.51268C3.61112 2.19988 3.74918 1.76113 4.26157 1.58208C4.99537 1.32568 5.45682 2.03743 5.57632 2.51268H3.57947ZM4.20023 0.534655H4.88033" stroke="currentColor" stroke-width="0.5625" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sb-be-text">tranducdesign</span>
       </a>
     </div>
 
@@ -1191,6 +1300,58 @@
             <div class="home-stats">
               <div><div class="hs-num"><span class="hs-count" data-value="15">0</span>+</div><div class="hs-label">NĂM<br>KINH NGHIỆM</div></div>
               <div><div class="hs-num"><span class="hs-count" data-value="200">0</span>+</div><div class="hs-label">DỰ ÁN <br> HOÀN THÀNH</div></div>
+            </div>
+          </div>
+
+          <!-- Mobile-only copy of the Figma-style board (desktop version is
+               absolutely positioned in .token-showcase above #home; this one
+               sits in normal flow right after the stats on small screens). -->
+          <div class="token-showcase-mobile" aria-hidden="true">
+            <div class="figma-frame">
+              <div class="figma-topbar">
+                <div class="fg-icons">
+                  <span class="fg-icon fg-icon-cursor">↖</span>
+                  <span class="fg-icon fg-icon-frame">▭</span>
+                  <span class="fg-icon fg-icon-pen">✎</span>
+                </div>
+                <div class="fg-filename">Design-System.fig</div>
+                <div class="fg-zoom">100%</div>
+              </div>
+              <div class="figma-body">
+                <aside class="fg-layers">
+                  <div class="fg-layers-title">Layers</div>
+                  <div class="fg-layer fg-layer-1"><span class="fg-layer-dot" style="background:var(--text-faint)"></span>Spacing / Grid</div>
+                  <div class="fg-layer fg-layer-2"><span class="fg-layer-dot" style="background:var(--primary)"></span>Color Tokens</div>
+                  <div class="fg-layer fg-layer-3"><span class="fg-layer-dot" style="background:var(--color-purple)"></span>Button / Input</div>
+                  <div class="fg-layer fg-layer-4"><span class="fg-layer-dot" style="background:var(--info)"></span>Card Grid</div>
+                </aside>
+                <div class="fg-canvas">
+                  <div class="fg-artboard-label">Homepage — Desktop</div>
+                  <div class="fg-artboard">
+                    <div class="bw-nav">
+                      <span class="bw-logo"></span>
+                      <span class="bw-navline"></span><span class="bw-navline"></span><span class="bw-navline bw-navline-active"></span>
+                    </div>
+                    <div class="bw-hero">
+                      <span class="bw-line big"></span>
+                      <span class="bw-line big short"></span>
+                    </div>
+                    <div class="bw-grid">
+                      <span class="bw-card"></span><span class="bw-card"></span><span class="bw-card"></span>
+                    </div>
+                    <div class="bw-input-row">
+                      <span class="bw-input">Aa Input field</span>
+                      <span class="bw-input-btn">Gửi</span>
+                    </div>
+                    <span class="fg-handle fg-handle-tl"></span><span class="fg-handle fg-handle-tr"></span>
+                    <span class="fg-handle fg-handle-bl"></span><span class="fg-handle fg-handle-br"></span>
+                    <div class="fg-grid-overlay" aria-hidden="true">
+                      <span></span><span></span><span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1466,6 +1627,7 @@
              src bên dưới. Thiếu ảnh sẽ tự hiện chữ viết tắt thay thế. -->
         <div class="exp-list reveal-group">
           <div class="exp-item reveal">
+            <div class="exp-top">
             <div class="exp-logo">
               <svg width="39" height="10" viewBox="0 0 39 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:70%;height:auto;" role="img" aria-label="Difisoft">
                 <g clip-path="url(#clip0_3444_22185)">
@@ -1482,7 +1644,6 @@
                 </defs>
               </svg>
             </div>
-            <div class="exp-body">
               <div class="exp-head">
                 <div>
                   <div class="exp-role">Chuyên viên Thiết kế UI Cấp cao</div>
@@ -1490,14 +1651,15 @@
                 </div>
                 <div class="exp-date">Th12/2019 – Hiện tại</div>
               </div>
+            </div>
               <ul class="exp-bullets">
                 <li>Phối hợp với Product Owner để thiết kế UI, tương tác và hình ảnh cho các sản phẩm fintech</li>
                 <li>Thực hiện nghiên cứu người dùng, xây dựng user flow, định hướng chiến lược UX cho nền tảng mobile &amp; web</li>
                 <li>Thiết kế landing page và banner marketing cho các chiến dịch quảng bá số</li>
               </ul>
-            </div>
           </div>
           <div class="exp-item reveal">
+            <div class="exp-top">
             <div class="exp-logo">
               <svg width="31" height="18" viewBox="0 0 31 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:75%;height:auto;" role="img" aria-label="Caia">
                 <mask id="mask0_3444_22296" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="31" height="12">
@@ -1514,7 +1676,6 @@
                 <path d="M1.00374 16.5507C0.773713 16.5507 0.579702 16.5072 0.421707 16.4202C0.263711 16.3309 0.126626 16.2204 0.0104523 16.0888L0.442618 15.7433C0.507676 15.8561 0.587836 15.9431 0.683097 16.0042C0.778359 16.063 0.884078 16.0924 1.00025 16.0924C1.12572 16.0924 1.22098 16.0571 1.28604 15.9866C1.35342 15.9161 1.38711 15.8361 1.38711 15.7468C1.38711 15.6928 1.37201 15.6469 1.3418 15.6093C1.3116 15.5717 1.2721 15.54 1.2233 15.5141C1.17451 15.4859 1.11759 15.4612 1.05253 15.4401C0.989796 15.4189 0.924738 15.3978 0.857358 15.3766C0.771389 15.3484 0.685421 15.3179 0.599452 15.2849C0.513483 15.252 0.435648 15.2086 0.365943 15.1545C0.298563 15.0981 0.2428 15.0299 0.198653 14.95C0.156831 14.8677 0.13592 14.7655 0.13592 14.6433C0.13592 14.5398 0.156831 14.4435 0.198653 14.3541C0.240476 14.2648 0.298563 14.1873 0.372914 14.1214C0.449588 14.0533 0.539043 14.0004 0.641275 13.9628C0.745831 13.9252 0.858519 13.9064 0.97934 13.9064C1.08157 13.9064 1.17335 13.9158 1.25467 13.9346C1.33832 13.9534 1.41383 13.9792 1.48121 14.0121C1.55091 14.045 1.61365 14.085 1.66941 14.132C1.7275 14.1767 1.7821 14.226 1.83322 14.2801L1.44287 14.5798C1.33367 14.4153 1.18032 14.333 0.982825 14.333C0.866652 14.333 0.778359 14.3612 0.717949 14.4176C0.65754 14.474 0.627334 14.5434 0.627334 14.6256C0.627334 14.6773 0.641275 14.7208 0.669156 14.7561C0.697038 14.7913 0.734214 14.8231 0.780683 14.8513C0.829476 14.8771 0.885239 14.9006 0.947973 14.9218C1.01071 14.9429 1.07693 14.9653 1.14663 14.9888C1.2326 15.017 1.31857 15.0499 1.40454 15.0875C1.49283 15.1228 1.57183 15.1698 1.64153 15.2285C1.71356 15.2849 1.77164 15.3555 1.81579 15.4401C1.85994 15.5223 1.88201 15.6258 1.88201 15.7504C1.88201 15.8514 1.86225 15.9502 1.82276 16.0465C1.78326 16.1429 1.72634 16.2287 1.65198 16.3039C1.57763 16.3768 1.48586 16.4367 1.37665 16.4837C1.26745 16.5284 1.14314 16.5507 1.00374 16.5507ZM2.11022 13.9416H3.61931V14.4H2.5842V14.9923H3.61931V15.4507H2.5842V16.0571H3.61931V16.5154H2.11022V13.9416ZM5.13074 16.5507C4.9495 16.5507 4.7799 16.5166 4.6219 16.4485C4.46391 16.3779 4.32565 16.2839 4.20716 16.1664C4.09099 16.0465 3.99922 15.9067 3.93182 15.7468C3.86445 15.5846 3.83075 15.4119 3.83075 15.2285C3.83075 15.0452 3.86445 14.8736 3.93182 14.7138C3.99922 14.5539 4.09099 14.4141 4.20716 14.2942C4.32565 14.1743 4.46391 14.0803 4.6219 14.0121C4.7799 13.9416 4.9495 13.9064 5.13074 13.9064C5.31197 13.9064 5.48159 13.9416 5.63958 14.0121C5.79758 14.0803 5.93582 14.1743 6.05432 14.2942C6.17281 14.4141 6.26576 14.5539 6.33313 14.7138C6.40053 14.8736 6.4342 15.0452 6.4342 15.2285C6.4342 15.4119 6.40053 15.5846 6.33313 15.7468C6.26576 15.9067 6.17281 16.0465 6.05432 16.1664C5.93582 16.2839 5.79758 16.3779 5.63958 16.4485C5.48159 16.5166 5.31197 16.5507 5.13074 16.5507ZM5.13074 16.0782C5.24692 16.0782 5.35496 16.0559 5.45486 16.0113C5.55711 15.9666 5.64539 15.9067 5.71974 15.8314C5.79641 15.7539 5.85566 15.6634 5.89748 15.56C5.94163 15.4565 5.9637 15.3461 5.9637 15.2285C5.9637 15.111 5.94163 15.0005 5.89748 14.8971C5.85566 14.7937 5.79641 14.7044 5.71974 14.6292C5.64539 14.5516 5.55711 14.4905 5.45486 14.4458C5.35496 14.4011 5.24692 14.3788 5.13074 14.3788C5.01457 14.3788 4.90537 14.4011 4.80313 14.4458C4.70323 14.4905 4.6161 14.5516 4.54174 14.6292C4.46739 14.7044 4.40814 14.7937 4.36399 14.8971C4.32217 15.0005 4.30126 15.111 4.30126 15.2285C4.30126 15.3461 4.32217 15.4565 4.36399 15.56C4.40814 15.6634 4.46739 15.7539 4.54174 15.8314C4.6161 15.9067 4.70323 15.9666 4.80313 16.0113C4.90537 16.0559 5.01457 16.0782 5.13074 16.0782ZM9.12533 16.318C9.02311 16.3909 8.91389 16.4485 8.79772 16.4908C8.68387 16.5331 8.56421 16.5542 8.43875 16.5542C8.25519 16.5542 8.09953 16.5295 7.97173 16.4802C7.84393 16.4285 7.73938 16.3627 7.65806 16.2827C7.57906 16.2028 7.52214 16.1135 7.48729 16.0148C7.45243 15.9137 7.43501 15.8138 7.43501 15.7151C7.43501 15.5529 7.47568 15.4107 7.55699 15.2885C7.64064 15.1662 7.74635 15.0675 7.87414 14.9923C7.83465 14.9288 7.80444 14.863 7.78353 14.7949C7.76495 14.7267 7.75565 14.6515 7.75565 14.5692C7.75565 14.4752 7.77307 14.3882 7.80793 14.3083C7.84511 14.2284 7.89621 14.1591 7.96127 14.1003C8.02634 14.0392 8.10301 13.9922 8.1913 13.9593C8.28191 13.924 8.3795 13.9064 8.48406 13.9064C8.59094 13.9064 8.68504 13.9193 8.76636 13.9452C8.84767 13.971 8.91855 14.0063 8.97895 14.0509C9.03936 14.0932 9.08933 14.1438 9.12882 14.2025C9.17064 14.2589 9.20316 14.3201 9.22641 14.3859L8.76636 14.5516C8.74778 14.4905 8.71756 14.4388 8.67574 14.3965C8.63392 14.3541 8.57583 14.333 8.50148 14.333C8.42945 14.333 8.3702 14.3553 8.32374 14.4C8.27727 14.4446 8.25403 14.5011 8.25403 14.5692C8.25403 14.6186 8.25985 14.6632 8.27146 14.7032C8.2854 14.7431 8.30747 14.7855 8.33768 14.8301C8.3702 14.8748 8.4132 14.9265 8.46663 14.9853C8.52239 15.0417 8.5921 15.1122 8.67574 15.1968L9.16019 15.6904C9.21131 15.6175 9.25313 15.5412 9.28565 15.4612C9.32051 15.3813 9.34723 15.3002 9.36581 15.218H8.93713V14.7631H9.83632V14.9853C9.83632 15.1474 9.80262 15.3167 9.73524 15.493C9.66787 15.6693 9.57493 15.835 9.45643 15.9901L9.97224 16.5154H9.32399L9.12533 16.318ZM8.43526 16.1347C8.50497 16.1347 8.57234 16.1253 8.6374 16.1065C8.70247 16.0853 8.7652 16.0559 8.82561 16.0183L8.2854 15.4683C8.23428 15.4189 8.18666 15.3707 8.14251 15.3237C8.06583 15.3707 8.00658 15.4248 7.96476 15.4859C7.92527 15.547 7.90551 15.6223 7.90551 15.7116C7.90551 15.768 7.91712 15.822 7.94036 15.8738C7.9636 15.9231 7.99728 15.9678 8.04143 16.0077C8.08559 16.0453 8.14018 16.0759 8.20524 16.0994C8.27261 16.1229 8.34929 16.1347 8.43526 16.1347ZM10.8754 13.9416H11.3703L11.8513 15.7433L12.3845 13.9416H12.8515L13.3813 15.7362L13.8587 13.9416H14.3362L13.6183 16.5154H13.1478L12.6145 14.6997L12.0813 16.5154H11.6003L10.8754 13.9416ZM14.5399 13.9416H16.049V14.4H15.0139V14.9923H16.049V15.4507H15.0139V16.0571H16.049V16.5154H14.5399V13.9416ZM16.3131 13.9416H17.1147C17.3958 13.9416 17.6131 14.0027 17.7664 14.125C17.9221 14.2472 18 14.4258 18 14.6609C18 14.8842 17.907 15.0511 17.7211 15.1615C17.8396 15.2156 17.9303 15.292 17.993 15.3907C18.058 15.4894 18.0906 15.6105 18.0906 15.7539C18.0906 16.0077 18.0081 16.1981 17.8431 16.3251C17.6805 16.452 17.4586 16.5154 17.1774 16.5154H16.3131V13.9416ZM16.7871 15.4154V16.0747H17.1774C17.3215 16.0747 17.4295 16.0465 17.5016 15.9901C17.5759 15.9313 17.6131 15.8491 17.6131 15.7433C17.6131 15.6375 17.5806 15.5564 17.5155 15.5C17.4528 15.4436 17.3331 15.4154 17.1565 15.4154H16.7871ZM16.7871 14.3824V14.9676H17.1147C17.2657 14.9676 17.3714 14.9394 17.4319 14.883C17.4923 14.8266 17.5225 14.7526 17.5225 14.6609C17.5225 14.5645 17.4911 14.494 17.4284 14.4493C17.3656 14.4047 17.2611 14.3824 17.1147 14.3824H16.7871ZM19.1653 13.9416H19.8589C20.0726 13.9416 20.2632 13.9745 20.4305 14.0404C20.5978 14.1062 20.7383 14.1967 20.8522 14.3118C20.9683 14.427 21.0554 14.5633 21.1136 14.7208C21.1739 14.876 21.2042 15.0452 21.2042 15.2285C21.2042 15.4119 21.1715 15.5823 21.1066 15.7398C21.0415 15.8973 20.9498 16.0336 20.8313 16.1488C20.715 16.2616 20.5756 16.3509 20.413 16.4167C20.2503 16.4825 20.0726 16.5154 19.8798 16.5154H19.1653V13.9416ZM19.6393 14.3859V16.0712H19.824C19.9634 16.0712 20.0889 16.05 20.2004 16.0077C20.312 15.9654 20.4061 15.9067 20.4827 15.8314C20.5616 15.7539 20.6222 15.6646 20.664 15.5635C20.708 15.4601 20.7302 15.3484 20.7302 15.2285C20.7302 15.104 20.7115 14.9911 20.6744 14.8901C20.6372 14.7866 20.5803 14.6973 20.5037 14.6221C20.427 14.5469 20.3305 14.4893 20.2144 14.4493C20.0981 14.407 19.9611 14.3859 19.8031 14.3859H19.6393ZM21.4252 13.9416H22.9343V14.4H21.8992V14.9923H22.9343V15.4507H21.8992V16.0571H22.9343V16.5154H21.4252V13.9416ZM24.0558 16.5507C23.8258 16.5507 23.6317 16.5072 23.4738 16.4202C23.3159 16.3309 23.1786 16.2204 23.0625 16.0888L23.4947 15.7433C23.5598 15.8561 23.64 15.9431 23.7352 16.0042C23.8304 16.063 23.9362 16.0924 24.0523 16.0924C24.1778 16.0924 24.273 16.0571 24.3381 15.9866C24.4054 15.9161 24.4392 15.8361 24.4392 15.7468C24.4392 15.6928 24.4241 15.6469 24.3939 15.6093C24.3636 15.5717 24.3242 15.54 24.2754 15.5141C24.2266 15.4859 24.1697 15.4612 24.1046 15.4401C24.0419 15.4189 23.9768 15.3978 23.9094 15.3766C23.8234 15.3484 23.7376 15.3179 23.6515 15.2849C23.5655 15.252 23.4877 15.2086 23.418 15.1545C23.3507 15.0981 23.2949 15.0299 23.2507 14.95C23.2089 14.8677 23.188 14.7655 23.188 14.6433C23.188 14.5398 23.2089 14.4435 23.2507 14.3541C23.2926 14.2648 23.3507 14.1873 23.425 14.1214C23.5017 14.0533 23.5912 14.0004 23.6934 13.9628C23.7979 13.9252 23.9105 13.9064 24.0314 13.9064C24.1336 13.9064 24.2255 13.9158 24.3067 13.9346C24.3904 13.9534 24.466 13.9792 24.5333 14.0121C24.603 14.045 24.6657 14.085 24.7215 14.132C24.7796 14.1767 24.8341 14.226 24.8853 14.2801L24.495 14.5798C24.3858 14.4153 24.2325 14.333 24.0349 14.333C23.9188 14.333 23.8304 14.3612 23.77 14.4176C23.7097 14.474 23.6794 14.5434 23.6794 14.6256C23.6794 14.6773 23.6934 14.7208 23.7212 14.7561C23.7491 14.7913 23.7864 14.8231 23.8328 14.8513C23.8816 14.8771 23.9373 14.9006 24.0001 14.9218C24.0628 14.9429 24.129 14.9653 24.1987 14.9888C24.2847 15.017 24.3706 15.0499 24.4566 15.0875C24.5448 15.1228 24.6239 15.1698 24.6936 15.2285C24.7657 15.2849 24.8237 15.3555 24.8679 15.4401C24.9121 15.5223 24.9341 15.6258 24.9341 15.7504C24.9341 15.8514 24.9143 15.9502 24.8748 16.0465C24.8354 16.1429 24.7784 16.2287 24.7041 16.3039C24.6298 16.3768 24.5379 16.4367 24.4287 16.4837C24.3196 16.5284 24.1952 16.5507 24.0558 16.5507ZM25.1797 13.9416H25.6537V16.5154H25.1797V13.9416ZM27.2167 16.5507C27.0192 16.5507 26.8392 16.5154 26.6765 16.4449C26.5138 16.3744 26.3744 16.2792 26.2583 16.1593C26.1422 16.0371 26.0527 15.8961 25.9899 15.7362C25.9272 15.5764 25.8958 15.4072 25.8958 15.2285C25.8958 15.0452 25.9283 14.8736 25.9934 14.7138C26.0585 14.5516 26.1479 14.4117 26.2618 14.2942C26.3779 14.1743 26.5151 14.0803 26.673 14.0121C26.8333 13.9416 27.0076 13.9064 27.1958 13.9064C27.3282 13.9064 27.4526 13.9228 27.5687 13.9557C27.6848 13.9863 27.7918 14.0309 27.8894 14.0897C27.9893 14.1485 28.0776 14.219 28.1542 14.3013C28.2333 14.3812 28.2995 14.4693 28.3529 14.5657L27.9347 14.8195C27.8556 14.6715 27.7545 14.5598 27.6315 14.4846C27.5106 14.4094 27.3666 14.3718 27.1993 14.3718C27.0808 14.3718 26.9704 14.3953 26.8682 14.4423C26.7682 14.487 26.68 14.5481 26.6033 14.6256C26.529 14.7032 26.4709 14.7937 26.4291 14.8971C26.3872 15.0005 26.3663 15.111 26.3663 15.2285C26.3663 15.3484 26.3872 15.4601 26.4291 15.5635C26.4709 15.6669 26.529 15.7574 26.6033 15.835C26.68 15.9125 26.7706 15.9736 26.8752 16.0183C26.9797 16.063 27.0936 16.0853 27.2167 16.0853C27.4073 16.0853 27.5652 16.0348 27.6907 15.9337C27.8186 15.8326 27.9057 15.6975 27.9521 15.5282H27.14V15.0699H28.4609V15.2603C28.4609 15.4342 28.4319 15.5999 28.3738 15.7574C28.3157 15.9125 28.232 16.0489 28.1229 16.1664C28.0159 16.2839 27.8859 16.3779 27.7325 16.4485C27.5792 16.5166 27.4073 16.5507 27.2167 16.5507ZM28.6849 13.9416H29.2216L30.323 15.6939V13.9416H30.7969V16.5154H30.2916L29.1589 14.7067V16.5154H28.6849V13.9416Z" fill="#075B77"/>
               </svg>
             </div>
-            <div class="exp-body">
               <div class="exp-head">
                 <div>
                   <div class="exp-role">Trưởng nhóm Thiết kế</div>
@@ -1522,17 +1683,17 @@
                 </div>
                 <div class="exp-date">Th4/2014 – Th12/2019</div>
               </div>
+            </div>
               <ul class="exp-bullets">
                 <li>Dẫn dắt đội thiết kế thực hiện giao diện website, banner và hình ảnh cho nhiều khách hàng</li>
                 <li>Xây dựng hệ thống nhận diện thương hiệu hoàn chỉnh: logo, brochure, danh thiếp và brand guideline</li>
               </ul>
-            </div>
           </div>
           <div class="exp-item reveal">
+            <div class="exp-top">
             <div class="exp-logo">
               <img src="images/logos/hurasoft.png" alt="Hurasoft" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'exp-logo-fallback',textContent:'HS'}))">
             </div>
-            <div class="exp-body">
               <div class="exp-head">
                 <div>
                   <div class="exp-role">Trưởng nhóm Thiết kế</div>
@@ -1540,13 +1701,14 @@
                 </div>
                 <div class="exp-date">Th4/2012 – Th4/2014</div>
               </div>
+            </div>
               <ul class="exp-bullets">
                 <li>Chỉ đạo sản xuất thiết kế giao diện web và tài sản hình ảnh cho khách hàng công ty</li>
                 <li>Thực hiện các ấn phẩm nhận diện thương hiệu bao gồm hệ thống logo và tài liệu in ấn</li>
               </ul>
-            </div>
           </div>
           <div class="exp-item reveal">
+            <div class="exp-top">
             <div class="exp-logo">
               <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80%;height:auto;" role="img" aria-label="Finalstyle">
                 <g clip-path="url(#clip0_3444_22311)">
@@ -1596,7 +1758,6 @@
                 </defs>
               </svg>
             </div>
-            <div class="exp-body">
               <div class="exp-head">
                 <div>
                   <div class="exp-role">Thiết kế Web &amp; Đồ hoạ</div>
@@ -1604,11 +1765,11 @@
                 </div>
                 <div class="exp-date">Th10/2009 – Th4/2012</div>
               </div>
+            </div>
               <ul class="exp-bullets">
                 <li>Thiết kế giao diện website, banner quảng cáo và tài sản hình ảnh cho các dự án khách hàng</li>
                 <li>Xây dựng bộ nhận diện thương hiệu và thực hiện prototype, mockup tương tác</li>
               </ul>
-            </div>
           </div>
         </div>
       </section>
@@ -1622,37 +1783,39 @@
              1.jpg, 2.jpg, 3.jpg (khớp thứ tự thẻ bên dưới). Nếu ảnh chưa có,
              hệ thống tự hiện lại chữ viết tắt (initials) như hiện tại. -->
         <div class="testi-carousel reveal-group">
-          <button type="button" class="testi-nav prev" id="testiPrev" aria-label="Đánh giá trước">
-            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-          </button>
           <div class="testi-viewport">
             <div class="testi-track" id="testiTrack">
               <div class="testi-card reveal">
                 <p class="testi-quote"><span class="testi-quote-text">"Tôi đánh giá Đức là một designer làm việc rất thông minh, chuyên nghiệp và có tinh thần trách nhiệm cao. Đức có khả năng nắm bắt yêu cầu cũng như hiểu ý đối tác rất nhanh, kể cả với những nội dung nghiệp vụ phức tạp, từ đó đề xuất được các phương án thiết kế phù hợp và có tính ứng dụng cao. Các sản phẩm do Đức thực hiện luôn được đầu tư kỹ lưỡng, có tính thẩm mỹ, hiện đại và thể hiện chuyên môn thiết kế UX/UI rất tốt. Đặc biệt, tốc độ xử lý công việc của Đức rất nhanh nhưng vẫn đảm bảo chất lượng, sự chỉn chu và luôn hoàn thành đúng tiến độ đã cam kết. Đây là một đối tác đáng tin cậy và rất chuyên nghiệp trong quá trình phối hợp triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
-                  <img class="testi-avatar" src="images/testimonials/1.jpg" alt="Chị Hạnh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'NM'}))">
+                  <img class="testi-avatar" src="images/testimonials/1.jpg" alt="Chị Hạnh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'H'}))">
                   <div><div class="testi-name">Chị Hạnh</div><div class="testi-role">Phó trưởng Phòng Chuyển đổi số- Công ty cổ phần chứng khoán BIDV - BSC</div></div>
                 </div>
               </div>
               <div class="testi-card reveal">
                 <p class="testi-quote"><span class="testi-quote-text">"Đức là một designer làm việc chuyên nghiệp, trách nhiệm và luôn đảm bảo đúng tiến độ. Trong quá trình triển khai hệ thống quản lý số liệu và datalogger ngành nước, Đức nắm bắt yêu cầu nghiệp vụ nhanh, chủ động đề xuất các giải pháp thiết kế rõ ràng, phù hợp với thực tế vận hành và dễ sử dụng. Các sản phẩm được thực hiện chỉn chu, hiện đại, có tính ứng dụng cao và hỗ trợ tốt cho việc theo dõi, quản lý dữ liệu. Tôi đánh giá cao khả năng phối hợp, tốc độ xử lý công việc cũng như sự cam kết của Đức trong suốt quá trình triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
-                  <img class="testi-avatar" src="images/testimonials/2.jpg" alt="Anh Nguyễn Tấn Long" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'LH'}))">
+                  <img class="testi-avatar" src="images/testimonials/2.jpg" alt="Anh Nguyễn Tấn Long" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'TL'}))">
                   <div><div class="testi-name">Anh Nguyễn Tấn Long</div><div class="testi-role">GĐKD Công ty cổ phẩn cấp nước Phú Mỹ</div></div>
                 </div>
               </div>
               <div class="testi-card reveal">
                 <p class="testi-quote"><span class="testi-quote-text">"Ban đầu, Đức hợp tác với công ty trong vai trò cộng tác viên. Tuy nhiên, bằng sự chuyên nghiệp, chỉn chu và tinh thần hỗ trợ khách hàng tận tâm, Đức đã nhanh chóng tạo được niềm tin trong quá trình làm việc. Đức luôn chủ động lắng nghe, nắm bắt yêu cầu và phối hợp trách nhiệm để hoàn thiện sản phẩm đúng kỳ vọng. Từ những kết quả tích cực ban đầu, công ty đã tin tưởng giao cho Đức phụ trách thiết kế giao diện cho nhiều hệ thống quản lý và dự án tiếp theo."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
-                  <img class="testi-avatar" src="images/testimonials/3.jpg" alt="Anh Trần Vinh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'QB'}))">
+                  <img class="testi-avatar" src="images/testimonials/3.jpg" alt="Anh Trần Vinh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'TV'}))">
                   <div><div class="testi-name">Anh Trần Vinh</div><div class="testi-role">Công ty Cổ phần Cấp nước Bà Rịa - Vũng Tàu</div></div>
                 </div>
               </div>
             </div>
           </div>
-          <button type="button" class="testi-nav next" id="testiNext" aria-label="Đánh giá tiếp theo">
-            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
-          </button>
+          <div class="testi-nav-row">
+            <button type="button" class="testi-nav prev" id="testiPrev" aria-label="Đánh giá trước">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <button type="button" class="testi-nav next" id="testiNext" aria-label="Đánh giá tiếp theo">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
         </div>
       </section>
 
