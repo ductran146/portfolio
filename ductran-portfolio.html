@@ -70,16 +70,20 @@
   }
   .sb-top .brand{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--text-dim);}
 
-  .sb-profile{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+  /* desktop: original full-bleed portrait treatment, avatar stacked above
+     name/role. The small side-by-side avatar only kicks in on mobile
+     (see @media max-width:980px override below, next to .mobile-bar). */
+  .sb-profile{display:flex;flex-direction:column;margin-bottom:24px;}
   .sb-avatar{
-    width:64px;height:64px;flex-shrink:0;border-radius:var(--radius-md);
+    width:calc(100% + 72px);margin-left:-36px;margin-right:-36px;
+    aspect-ratio:398/586;border-radius:0;
     display:flex;align-items:center;justify-content:center;overflow:hidden;
-    font-family:var(--display);font-size:22px;font-weight:var(--font-weight-semibold);color:var(--bg-alt);
-    background:var(--gold);
+    font-family:var(--display);font-size:64px;font-weight:var(--font-weight-semibold);color:var(--bg-alt);
+    margin-bottom:24px;
   }
   .sb-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
   .sb-id{display:flex;flex-direction:column;gap:5px;min-width:0;}
-  .sb-name{font-family:var(--display);font-size:18px;font-weight:var(--font-weight-semibold);}
+  .sb-name{font-family:var(--display);font-size:24px;font-weight:var(--font-weight-semibold);}
   .sb-role{font-family:var(--mono);font-size:11px;font-weight:var(--font-weight-light);color:var(--gold);letter-spacing:var(--letter-spacing-wide);text-transform:uppercase;}
 
   .sb-meta{margin-top:22px;display:flex;flex-direction:column;gap:12px;}
@@ -141,6 +145,14 @@
        first ~66px permanently covered by the header, unreachable by scrolling. */
     .sidebar{transform:translateX(-100%);transition:transform .35s ease;box-shadow:0 0 60px rgba(0,0,0,0.5);border-radius:0 var(--radius-2xl) var(--radius-2xl) 0;padding-top:86px;}
     .sidebar.open{transform:translateX(0);}
+    /* mobile-only: small avatar sitting beside name/role instead of the
+       desktop's full-bleed portrait above them. */
+    .sb-profile{flex-direction:row;align-items:center;gap:16px;}
+    .sb-avatar{
+      width:64px;height:64px;flex-shrink:0;aspect-ratio:1;border-radius:var(--radius-md);
+      margin:0;font-size:22px;background:var(--gold);
+    }
+    .sb-name{font-size:18px;}
     .mobile-bar{
       display:flex;align-items:center;justify-content:space-between;
       position:fixed;top:0;left:0;right:0;height:66px;padding:0 22px;
