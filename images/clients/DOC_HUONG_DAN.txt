@@ -1,0 +1,10 @@
+Đặt logo khách hàng vào đây với đúng tên file (PNG hoặc SVG đều được, chỉ cần đổi phần mở rộng .png trong code nếu dùng SVG):
+
+- bsc.png       (BSC - BIDV Securities JSC)
+- fubonlife.png (Fubon Life - Bảo hiểm Nhân thọ)
+- pmw.png       (PMW - Phú Mỹ Wasuco)
+- bwaco.png     (BWACO)
+- sawaco.png    (SAWACO)
+- fit.png       (FIT)
+
+Nếu chưa có file, ô logo sẽ tự hiển thị tên viết tắt thay thế. Xoá file này sau khi đã thêm đủ ảnh.
