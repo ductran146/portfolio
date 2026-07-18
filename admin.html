@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Duc Tran Portfolio</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-tokens.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:var(--font-size-base);line-height:var(--line-height-normal);min-height:100vh;}
+  a{color:inherit;}
+  ::selection{background:var(--primary);color:var(--on-primary);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:48px 24px 120px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;}
+  .brand{font-size:20px;font-weight:var(--font-weight-semibold);}
+  .brand span{color:var(--primary);}
+  .who{display:flex;align-items:center;gap:12px;}
+  .who img{width:32px;height:32px;border-radius:50%;}
+  .who-name{font-size:13.5px;color:var(--text-dim);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    height:var(--control-h-md);padding:var(--control-pad-md);border-radius:var(--radius-md);
+    border:1px solid var(--border-strong);background:var(--surface);color:var(--text);
+    font-family:inherit;font-size:14px;font-weight:var(--font-weight-medium);cursor:pointer;
+    transition:border-color .2s ease, transform .2s ease, background .2s ease;
+  }
+  .btn:hover{border-color:var(--primary);transform:translateY(-1px);}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary);}
+  .btn-primary:hover{background:var(--primary-strong);border-color:var(--primary-strong);}
+  .btn-danger{color:var(--danger);}
+  .btn-danger:hover{border-color:var(--danger);}
+  .btn-sm{height:var(--control-h-sm);padding:var(--control-pad-sm);font-size:13px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  /* ---- gate screens ---- */
+  .gate{min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:20px;}
+  .gate h1{font-size:26px;font-weight:var(--font-weight-semibold);}
+  .gate p{color:var(--text-dim);max-width:420px;}
+  .gate .mono{font-family:var(--font-mono);font-size:13px;color:var(--text-faint);}
+
+  /* ---- project list ---- */
+  .list-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .list-head h2{font-size:20px;font-weight:var(--font-weight-semibold);}
+  .empty-hint{
+    border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:40px 24px;
+    text-align:center;color:var(--text-dim);margin-bottom:20px;
+  }
+  .proj-card{
+    display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;
+  }
+  .proj-thumb{width:96px;height:72px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;background:var(--surface-2);}
+  .proj-thumb-empty{width:96px;height:72px;border-radius:var(--radius-sm);background:var(--surface-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:11px;text-align:center;}
+  .proj-info{flex-grow:1;min-width:0;}
+  .proj-title{font-weight:var(--font-weight-semibold);font-size:15px;margin-bottom:2px;}
+  .proj-sub{color:var(--text-dim);font-size:12.5px;margin-bottom:6px;}
+  .proj-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .proj-tags span{font-size:11px;color:var(--text-faint);border:1px solid var(--border);border-radius:var(--radius-full);padding:2px 8px;}
+  .proj-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+  .proj-order{display:flex;gap:4px;}
+  .badge-featured{display:inline-block;font-size:10.5px;color:var(--on-primary);background:var(--primary);border-radius:var(--radius-full);padding:2px 8px;margin-left:8px;}
+
+  /* ---- modal / form ---- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(5,7,10,0.65);display:none;align-items:flex-start;justify-content:center;
+    padding:40px 16px;overflow-y:auto;z-index:100;
+  }
+  .modal-overlay.is-open{display:flex;}
+  .modal{
+    background:var(--bg-alt);border:1px solid var(--border-strong);border-radius:var(--radius-xl);
+    max-width:640px;width:100%;padding:32px;box-shadow:var(--shadow-overlay);
+  }
+  .modal h3{font-size:19px;font-weight:var(--font-weight-semibold);margin-bottom:24px;}
+  .f-row{margin-bottom:18px;}
+  .f-row label{display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+  .f-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  input[type="text"], input[type="number"], input[type="url"], textarea, select{
+    width:100%;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-md);
+    padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px;
+  }
+  textarea{min-height:80px;resize:vertical;}
+  input:focus, textarea:focus, select:focus{outline:none;border-color:var(--primary);}
+  .f-check{display:flex;align-items:center;gap:8px;}
+  .f-check label{margin:0;text-transform:none;font-size:14px;color:var(--text);}
+  .lang-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .lang-tab{
+    padding:5px 12px;border-radius:var(--radius-full);border:1px solid var(--border-strong);
+    font-size:12px;cursor:pointer;color:var(--text-dim);
+  }
+  .lang-tab.active{background:var(--primary);border-color:var(--primary);color:var(--on-primary);}
+  .lang-pane{display:none;}
+  .lang-pane.active{display:block;}
+
+  .img-list{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .img-item{position:relative;width:88px;height:66px;}
+  .img-item img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);}
+  .img-item button{
+    position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
+    background:var(--danger);color:#fff;border:none;font-size:12px;cursor:pointer;line-height:1;
+  }
+  .img-drop{
+    border:1px dashed var(--border-strong);border-radius:var(--radius-md);padding:16px;text-align:center;
+    color:var(--text-dim);font-size:13px;cursor:pointer;
+  }
+  .img-drop:hover{border-color:var(--primary);}
+  .img-drop input{display:none;}
+
+  .link-row{display:grid;grid-template-columns:130px 1fr auto;gap:8px;margin-bottom:8px;align-items:center;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;}
+  .err-msg{color:var(--danger);font-size:13px;margin-top:10px;}
+  .hint{color:var(--text-faint);font-size:12px;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div id="gateSignedOut" class="gate wrap" style="display:none;">
+  <h1>Portfolio Admin</h1>
+  <p>Sign in with the portfolio owner's Google account to manage projects.</p>
+  <button class="btn btn-primary" id="signInBtn">Sign in with Google</button>
+</div>
+
+<div id="gateNotAuthorized" class="gate wrap" style="display:none;">
+  <h1>Not authorized</h1>
+  <p>This Google account doesn't have access to this admin panel.</p>
+  <p class="mono" id="notAuthEmail"></p>
+  <button class="btn" id="signOutBtnGate">Sign out</button>
+</div>
+
+<div id="adminApp" class="wrap" style="display:none;">
+  <div class="topbar">
+    <div class="brand">Portfolio <span>Admin</span></div>
+    <div class="who">
+      <img id="whoAvatar" src="" alt="">
+      <span class="who-name" id="whoName"></span>
+      <button class="btn btn-sm" id="signOutBtn">Sign out</button>
+    </div>
+  </div>
+
+  <div id="importHint" class="empty-hint" style="display:none;">
+    <p style="margin-bottom:12px;">No projects yet in the database.</p>
+    <button class="btn btn-primary" id="importDefaultsBtn">Import the 6 existing portfolio projects</button>
+  </div>
+
+  <div class="list-head">
+    <h2>Projects</h2>
+    <button class="btn btn-primary" id="addProjectBtn">+ Add project</button>
+  </div>
+
+  <div id="projectList"></div>
+</div>
+
+<!-- ===================== Project form modal ===================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Add project</h3>
+    <form id="projectForm">
+      <div class="f-row f-two">
+        <div>
+          <label>Order (lower = earlier)</label>
+          <input type="number" id="fOrder" value="0">
+        </div>
+        <div class="f-check" style="margin-top:26px;">
+          <input type="checkbox" id="fFeatured">
+          <label for="fFeatured">Featured (large card, only one recommended)</label>
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="lang-tabs">
+          <span class="lang-tab active" data-lang="en">English</span>
+          <span class="lang-tab" data-lang="vi">Tiếng Việt</span>
+        </div>
+        <div class="lang-pane active" data-lang="en">
+          <label>Title (EN)</label>
+          <input type="text" id="fTitleEn" maxlength="100">
+          <label style="margin-top:12px;">Description (EN)</label>
+          <textarea id="fDescEn"></textarea>
+        </div>
+        <div class="lang-pane" data-lang="vi">
+          <label>Title (VI)</label>
+          <input type="text" id="fTitleVi" maxlength="100">
+          <label style="margin-top:12px;">Description (VI)</label>
+          <textarea id="fDescVi"></textarea>
+        </div>
+      </div>
+
+      <div class="f-row">
+        <label>Tags (comma separated)</label>
+        <input type="text" id="fTags" placeholder="UI Design, Design System, Mobile App">
+      </div>
+
+      <div class="f-row">
+        <label>Fallback link (used if no images — e.g. App Store / website URL)</label>
+        <input type="url" id="fHref" placeholder="https://...">
+      </div>
+
+      <div class="f-row">
+        <label>Images</label>
+        <div class="img-list" id="imgList"></div>
+        <label class="img-drop" id="imgDrop">
+          Click to upload images (uploads to Cloudinary)
+          <input type="file" id="imgInput" accept="image/*" multiple>
+        </label>
+        <div class="hint" id="uploadStatus"></div>
+      </div>
+
+      <div class="f-row">
+        <label>Links</label>
+        <div id="linkRows"></div>
+        <button type="button" class="btn btn-sm" id="addLinkBtn">+ Add link</button>
+      </div>
+
+      <div class="err-msg" id="formErr"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="cancelFormBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveFormBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import {
+  db, auth, googleProvider, ADMIN_EMAIL, uploadToCloudinary
+} from './firebase-init.js';
+import {
+  signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, orderBy, serverTimestamp, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const LINK_TYPES = ['website', 'appstore', 'demo', 'design-system'];
+
+const gateSignedOut = document.getElementById('gateSignedOut');
+const gateNotAuthorized = document.getElementById('gateNotAuthorized');
+const adminApp = document.getElementById('adminApp');
+const notAuthEmail = document.getElementById('notAuthEmail');
+const whoAvatar = document.getElementById('whoAvatar');
+const whoName = document.getElementById('whoName');
+const projectList = document.getElementById('projectList');
+const importHint = document.getElementById('importHint');
+
+document.getElementById('signInBtn').addEventListener('click', () => {
+  signInWithPopup(auth, googleProvider).catch(e => alert('Sign-in failed: ' + e.message));
+});
+document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
+document.getElementById('signOutBtnGate').addEventListener('click', () => signOut(auth));
+
+let projectsCache = [];
+let unsubscribeProjects = null;
+
+onAuthStateChanged(auth, (user) => {
+  gateSignedOut.style.display = 'none';
+  gateNotAuthorized.style.display = 'none';
+  adminApp.style.display = 'none';
+
+  if (!user) {
+    gateSignedOut.style.display = 'flex';
+    if (unsubscribeProjects) { unsubscribeProjects(); unsubscribeProjects = null; }
+    return;
+  }
+  if (user.email !== ADMIN_EMAIL) {
+    gateNotAuthorized.style.display = 'flex';
+    notAuthEmail.textContent = user.email;
+    return;
+  }
+  adminApp.style.display = 'block';
+  whoAvatar.src = user.photoURL || '';
+  whoName.textContent = user.displayName || user.email;
+  listenProjects();
+});
+
+function listenProjects(){
+  const q = query(collection(db, 'projects'), orderBy('order', 'asc'));
+  unsubscribeProjects = onSnapshot(q, (snap) => {
+    projectsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderList();
+  });
+}
+
+function renderList(){
+  importHint.style.display = projectsCache.length === 0 ? 'block' : 'none';
+  projectList.innerHTML = projectsCache.map(p => {
+    const thumb = (p.images && p.images[0])
+      ? `<img class="proj-thumb" src="${escAttr(p.images[0])}" alt="">`
+      : `<div class="proj-thumb-empty">No image</div>`;
+    const tags = (p.tags || []).map(t => `<span>${escHtml(t)}</span>`).join('');
+    return `
+      <div class="proj-card" data-id="${p.id}">
+        ${thumb}
+        <div class="proj-info">
+          <div class="proj-title">${escHtml(p.title?.en || '(untitled)')}${p.featured ? '<span class="badge-featured">Featured</span>' : ''}</div>
+          <div class="proj-sub">order ${p.order ?? 0} · ${escHtml(p.title?.vi || '')}</div>
+          <div class="proj-tags">${tags}</div>
+        </div>
+        <div class="proj-actions">
+          <button class="btn btn-sm edit-btn">Edit</button>
+          <button class="btn btn-sm btn-danger del-btn">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  projectList.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.closest('.proj-card').dataset.id;
+      openForm(projectsCache.find(p => p.id === id));
+    });
+  });
+  projectList.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const id = e.target.closest('.proj-card').dataset.id;
+      const p = projectsCache.find(x => x.id === id);
+      if (confirm(`Delete "${p?.title?.en || id}"? This cannot be undone.`)) {
+        await deleteDoc(doc(db, 'projects', id));
+      }
+    });
+  });
+}
+
+document.getElementById('importDefaultsBtn').addEventListener('click', async () => {
+  if (!confirm('Import the 6 existing portfolio projects into the database?')) return;
+  const btn = document.getElementById('importDefaultsBtn');
+  btn.disabled = true;
+  btn.textContent = 'Importing…';
+  for (const p of DEFAULT_PROJECTS) {
+    await addDoc(collection(db, 'projects'), { ...p, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  }
+  btn.textContent = 'Done';
+});
+
+// ===================== form modal =====================
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const projectForm = document.getElementById('projectForm');
+const formErr = document.getElementById('formErr');
+let editingId = null;
+let formImages = [];
+let formLinks = [];
+
+document.getElementById('addProjectBtn').addEventListener('click', () => openForm(null));
+document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeForm(); });
+
+document.querySelectorAll('.lang-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.lang-pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`.lang-pane[data-lang="${tab.dataset.lang}"]`).classList.add('active');
+  });
+});
+
+function openForm(project){
+  editingId = project ? project.id : null;
+  modalTitle.textContent = project ? 'Edit project' : 'Add project';
+  document.getElementById('fOrder').value = project?.order ?? (projectsCache.length);
+  document.getElementById('fFeatured').checked = !!project?.featured;
+  document.getElementById('fTitleEn').value = project?.title?.en || '';
+  document.getElementById('fTitleVi').value = project?.title?.vi || '';
+  document.getElementById('fDescEn').value = project?.desc?.en || '';
+  document.getElementById('fDescVi').value = project?.desc?.vi || '';
+  document.getElementById('fTags').value = (project?.tags || []).join(', ');
+  document.getElementById('fHref').value = project?.href || '';
+  formImages = [...(project?.images || [])];
+  formLinks = [...(project?.links || [])];
+  renderImgList();
+  renderLinkRows();
+  formErr.textContent = '';
+  document.getElementById('uploadStatus').textContent = '';
+  modalOverlay.classList.add('is-open');
+}
+function closeForm(){
+  modalOverlay.classList.remove('is-open');
+}
+
+function renderImgList(){
+  const imgList = document.getElementById('imgList');
+  imgList.innerHTML = formImages.map((src, i) => `
+    <div class="img-item" data-i="${i}">
+      <img src="${escAttr(src)}" alt="">
+      <button type="button" title="Remove">×</button>
+    </div>`).join('');
+  imgList.querySelectorAll('.img-item button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.closest('.img-item').dataset.i, 10);
+      formImages.splice(i, 1);
+      renderImgList();
+    });
+  });
+}
+
+document.getElementById('imgInput').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  if (files.length === 0) return;
+  const status = document.getElementById('uploadStatus');
+  status.textContent = `Uploading ${files.length} image(s)…`;
+  for (const file of files) {
+    try {
+      const url = await uploadToCloudinary(file);
+      formImages.push(url);
+      renderImgList();
+    } catch (err) {
+      status.textContent = 'Upload failed: ' + err.message;
+    }
+  }
+  status.textContent = 'Done.';
+  e.target.value = '';
+});
+
+function renderLinkRows(){
+  const wrap = document.getElementById('linkRows');
+  wrap.innerHTML = formLinks.map((l, i) => `
+    <div class="link-row" data-i="${i}">
+      <select class="link-type">
+        ${LINK_TYPES.map(t => `<option value="${t}" ${t === l.type ? 'selected' : ''}>${t}</option>`).join('')}
+      </select>
+      <input type="url" class="link-url" value="${escAttr(l.url || '')}" placeholder="https://...">
+      <button type="button" class="btn btn-sm btn-danger">×</button>
+    </div>`).join('');
+  wrap.querySelectorAll('.link-row').forEach(row => {
+    const i = parseInt(row.dataset.i, 10);
+    row.querySelector('.link-type').addEventListener('change', (e) => formLinks[i].type = e.target.value);
+    row.querySelector('.link-url').addEventListener('input', (e) => formLinks[i].url = e.target.value);
+    row.querySelector('button').addEventListener('click', () => { formLinks.splice(i, 1); renderLinkRows(); });
+  });
+}
+document.getElementById('addLinkBtn').addEventListener('click', () => {
+  formLinks.push({ type: 'website', url: '' });
+  renderLinkRows();
+});
+
+projectForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const titleEn = document.getElementById('fTitleEn').value.trim();
+  if (!titleEn) { formErr.textContent = 'English title is required.'; return; }
+
+  const data = {
+    order: parseInt(document.getElementById('fOrder').value, 10) || 0,
+    featured: document.getElementById('fFeatured').checked,
+    title: { en: titleEn, vi: document.getElementById('fTitleVi').value.trim() || titleEn },
+    desc: { en: document.getElementById('fDescEn').value.trim(), vi: document.getElementById('fDescVi').value.trim() },
+    tags: document.getElementById('fTags').value.split(',').map(s => s.trim()).filter(Boolean),
+    href: document.getElementById('fHref').value.trim(),
+    images: formImages,
+    links: formLinks.filter(l => l.url),
+    updatedAt: serverTimestamp()
+  };
+
+  try {
+    if (editingId) {
+      await updateDoc(doc(db, 'projects', editingId), data);
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'projects'), data);
+    }
+    closeForm();
+  } catch (err) {
+    formErr.textContent = 'Save failed: ' + err.message;
+  }
+});
+
+function escHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(str){
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+}
+
+// ===================== default seed data (existing 6 projects) =====================
+const DEFAULT_PROJECTS = [
+  {
+    order: 0, featured: true,
+    title: { en: 'NHSV Pro - Securities Trading Mobile App', vi: 'NHSV Pro - Ứng dụng giao dịch chứng khoán' },
+    desc: {
+      en: 'The app needed its trading and portfolio flows reorganized so users could scan data faster, cut down on taps, and place orders more accurately on mobile. I was involved from business-flow analysis and concept design through UX/UI design and building the Design System for the entire app.',
+      vi: 'Ứng dụng cần tổ chức lại các luồng giao dịch và danh mục đầu tư để người dùng có thể đọc dữ liệu nhanh, giảm thao tác và đặt lệnh chính xác hơn trên màn hình di động. Tôi tham gia từ phân tích luồng nghiệp vụ, xây concept, thiết kế UX/UI đến xây dựng Design System cho toàn bộ ứng dụng.'
+    },
+    tags: ['UX Research', 'UI Design', 'Design System'],
+    href: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389',
+    images: ['images/nhsv/1.jpg','images/nhsv/2.jpg','images/nhsv/3.jpg','images/nhsv/4.jpg','images/nhsv/5.jpg','images/nhsv/6.jpg','images/nhsv/7.jpg','images/nhsv/8.jpg'],
+    links: [
+      { type: 'appstore', url: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389' },
+      { type: 'design-system', url: 'images/nhsv/NHSV%20Design%20System.html' }
+    ]
+  },
+  {
+    order: 1, featured: false,
+    title: { en: 'BSC - BIDV Securities MTrader', vi: 'BSC - BIDV Securities MTrader' },
+    desc: {
+      en: "A securities trading app embedded within BIDV SmartBanking, optimized for a seamless in-app experience consistent with BIDV's ecosystem.",
+      vi: 'Ứng dụng giao dịch chứng khoán tích hợp trong BIDV SmartBanking, tối ưu trải nghiệm nhúng và đồng nhất với hệ sinh thái BIDV.'
+    },
+    tags: ['Figma', 'Design System'],
+    href: '',
+    images: ['images/bsc/1.jpg','images/bsc/2.jpg','images/bsc/3.jpg','images/bsc/4.jpg','images/bsc/5.jpg','images/bsc/6.jpg','images/bsc/7.jpg'],
+    links: [ { type: 'design-system', url: 'images/bsc/BSC%20Design%20System.html' } ]
+  },
+  {
+    order: 2, featured: false,
+    title: { en: 'Kiggle - Parent & Education Platform', vi: 'Kiggle' },
+    desc: {
+      en: 'A platform connecting parents, education partners, and operations in a single ecosystem. Designed the mobile app for parents to find classes, read reviews, and book lessons, plus the Partner Center web dashboard for partners to manage consultations, schedules, and payments. Owned UX/UI design across the entire journey, from the mobile app to the partner dashboard.',
+      vi: 'Nền tảng kết nối phụ huynh, đối tác giáo dục và vận hành trong một hệ sinh thái duy nhất. Thiết kế app di động cho phụ huynh tìm lớp, xem đánh giá và đặt lịch học; thiết kế web Partner Center giúp đối tác quản lý tư vấn, lịch dạy và thanh toán. Đảm nhận UX/UI Design cho toàn bộ hành trình, từ mobile app đến dashboard đối tác.'
+    },
+    tags: ['Figma', 'Mobile App', 'Web Responsive'],
+    href: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi',
+    images: ['images/kiggle/1.jpg','images/kiggle/2.jpg','images/kiggle/3.jpg','images/kiggle/4.jpg','images/kiggle/5.jpg','images/kiggle/10.jpg'],
+    links: [
+      { type: 'appstore', url: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi' },
+      { type: 'design-system', url: 'images/kiggle/Kiggle%20Design%20System.html' }
+    ]
+  },
+  {
+    order: 3, featured: false,
+    title: { en: 'Tuong Ngan - Sales & Warehouse Management', vi: 'PM Quản lý Bán hàng - kho Công ty TNHH XD và TM Tường Ngân' },
+    desc: {
+      en: 'Tuong Ngan is a sales, warehouse, and accounts-receivable management system for a building-materials trading business. I worked directly on business analysis, information architecture, UX/UI design, and prototype development to standardize workflows from product and quote management to order creation, inventory tracking, and receivables.',
+      vi: 'Tường Ngân là hệ thống quản lý bán hàng, kho và công nợ dành cho doanh nghiệp kinh doanh vật tư. Tôi trực tiếp tham gia phân tích nghiệp vụ, xây dựng cấu trúc thông tin, thiết kế UX/UI và phát triển prototype để chuẩn hóa các quy trình từ quản lý sản phẩm, báo giá, tạo phiếu bán đến theo dõi tồn kho và công nợ.'
+    },
+    tags: ['Full-stack Solo', 'AI-Assisted Development', 'Laravel / PHP'],
+    href: '',
+    images: ['images/tuong-ngan/1.jpg','images/tuong-ngan/2.jpg','images/tuong-ngan/3.jpg','images/tuong-ngan/4.jpg','images/tuong-ngan/5.jpg','images/tuong-ngan/6.jpg','images/tuong-ngan/7.jpg','images/tuong-ngan/8.jpg'],
+    links: [ { type: 'design-system', url: 'images/tuong-ngan/TN%20Design%20System.html' } ]
+  },
+  {
+    order: 4, featured: false,
+    title: { en: 'PMW - Phu My Water Supply Website & Dashboard', vi: 'PMW - Công ty cổ phần cấp nước Phú Mỹ' },
+    desc: {
+      en: 'Designed the official website for Phu My Water Supply Joint Stock Company, fully responsive across all devices, along with a business-reporting dashboard system that shows performance data by region and customer segment, helping leadership monitor key metrics visually on both desktop and mobile.',
+      vi: 'Thiết kế website chính thức cho Công ty Cổ phần Cấp nước Phú Mỹ, chuẩn responsive trên mọi thiết bị, cùng hệ thống dashboard báo cáo số liệu kinh doanh theo khu vực và theo đối tượng khách hàng, giúp ban lãnh đạo theo dõi dữ liệu trực quan trên cả desktop và mobile.'
+    },
+    tags: ['Web Responsive', 'Dashboard'],
+    href: 'https://www.pmw.vn',
+    images: ['images/pmw/1.jpg','images/pmw/2.jpg'],
+    links: [
+      { type: 'website', url: 'https://www.pmw.vn' },
+      { type: 'demo', url: 'https://ductran146.github.io/pmw-dashboard/index.html' }
+    ]
+  },
+  {
+    order: 5, featured: false,
+    title: { en: 'USTH - University Website Redesign', vi: 'USTH - Trường ĐH Khoa học và Công nghệ Hà Nội' },
+    desc: {
+      en: 'I was the designer responsible for the entire web interface, handling the conversion from desktop layouts to mobile and tablet breakpoints, ensuring the layout, imagery, and news/event content displayed clearly at every screen size. The focus was on preserving the correct information hierarchy (admissions announcements, news, key figures), with every design adhering to a strict grid system and design standards.',
+      vi: 'Tôi là designer thiết kế toàn bộ các giao diện web, đảm nhận việc chuyển đổi giao diện desktop sang các breakpoint mobile/tablet, đảm bảo bố cục, hình ảnh và nội dung tin tức/sự kiện hiển thị mạch lạc trên mọi kích thước màn hình. Trọng tâm là giữ đúng thứ tự ưu tiên thông tin (thông báo tuyển sinh, tin tức, số liệu nổi bật). Mọi thiết kế đều đảm bảo đúng grid system, và đúng tiêu chuẩn.'
+    },
+    tags: ['Web Flow', 'Responsive'],
+    href: 'https://usth.edu.vn',
+    images: ['images/usth/1.jpg'],
+    links: [ { type: 'website', url: 'https://usth.edu.vn' } ]
+  }
+];
+</script>
+</body>
+</html>

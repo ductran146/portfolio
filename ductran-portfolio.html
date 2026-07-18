@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,6 +103,15 @@
   }
   .sb-be-box svg{width:12px;height:12px;stroke:currentColor;}
   .sb-be-text{font-family:var(--body);font-size:13px;color:var(--primary);}
+
+  .lang-switch{display:flex;gap:6px;margin-top:22px;}
+  .lang-switch button{
+    flex:1;font-family:var(--mono);font-size:11.5px;font-weight:var(--font-weight-semibold);letter-spacing:.05em;
+    padding:8px;border-radius:var(--radius-md);border:1px solid var(--border-strong);background:transparent;
+    color:var(--text-faint);cursor:pointer;transition:all .2s ease;
+  }
+  .lang-switch button:hover{color:var(--text);}
+  .lang-switch button.active{background:var(--gold);border-color:var(--gold);color:var(--bg-alt);}
 
   .sb-cta{
     margin-top:26px;text-align:center;background:var(--gold);color:var(--bg-alt);
@@ -1168,6 +1177,11 @@
         </span>
         <span class="sb-be-text">tranducdesign</span>
       </a>
+    </div>
+
+    <div class="lang-switch" id="langSwitch">
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="vi">VI</button>
     </div>
 
     <a href="#contact" class="sb-cta" id="ctaTrigger">Trao đổi cơ hội hợp tác</a>
@@ -2301,109 +2315,181 @@
   //   links: mảng nút liên kết hiển thị trong panel — type quyết định icon
   //          ('website' | 'appstore' | 'demo'). Để links: [] nếu dự án
   //          chưa có link nào để gắn.
-  const PROJECTS = [
+  // Project data now lives in Firestore (managed via admin.html) so projects
+  // can be added/edited/removed without touching this file. FALLBACK_PROJECTS
+  // below is only a safety net — shown if the Firestore fetch fails (offline,
+  // network hiccup, rules not published yet) so the section never renders
+  // completely empty. Once the admin panel has been used, the live data
+  // always takes priority over this fallback.
+  const FALLBACK_PROJECTS = [
     {
-      title: 'NHSV Pro - Securities trading mobile app',
-      href: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389',
-      featured: true,
+      order: 0, featured: true,
+      title: { en: 'NHSV Pro - Securities Trading Mobile App', vi: 'NHSV Pro - Ứng dụng giao dịch chứng khoán' },
+      desc: {
+        en: 'The app needed its trading and portfolio flows reorganized so users could scan data faster, cut down on taps, and place orders more accurately on mobile. I was involved from business-flow analysis and concept design through UX/UI design and building the Design System for the entire app.',
+        vi: 'Ứng dụng cần tổ chức lại các luồng giao dịch và danh mục đầu tư để người dùng có thể đọc dữ liệu nhanh, giảm thao tác và đặt lệnh chính xác hơn trên màn hình di động. Tôi tham gia từ phân tích luồng nghiệp vụ, xây concept, thiết kế UX/UI đến xây dựng Design System cho toàn bộ ứng dụng.'
+      },
       tags: ['UX Research', 'UI Design', 'Design System'],
-      folder: 'nhsv',
-      desc: 'Ứng dụng cần tổ chức lại các luồng giao dịch và danh mục đầu tư để người dùng có thể đọc dữ liệu nhanh, giảm thao tác và đặt lệnh chính xác hơn trên màn hình di động. Tôi tham gia từ phân tích luồng nghiệp vụ, xây concept, thiết kế UX/UI đến xây dựng Design System cho toàn bộ ứng dụng.',
+      href: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389',
+      images: ['images/nhsv/1.jpg','images/nhsv/2.jpg','images/nhsv/3.jpg','images/nhsv/4.jpg','images/nhsv/5.jpg','images/nhsv/6.jpg','images/nhsv/7.jpg','images/nhsv/8.jpg'],
       links: [
-        { type: 'appstore', label: 'Tải trên App Store', url: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389' },
-        { type: 'design-system', label: 'Design System', url: 'images/nhsv/NHSV%20Design%20System.html' }
+        { type: 'appstore', url: 'https://apps.apple.com/vn/app/nhsv-pro/id6474728389' },
+        { type: 'design-system', url: 'images/nhsv/NHSV%20Design%20System.html' }
       ]
     },
     {
-      title: 'BSC - BIDV Securities MTrader',
-      href: '#',
-      featured: false,
+      order: 1, featured: false,
+      title: { en: 'BSC - BIDV Securities MTrader', vi: 'BSC - BIDV Securities MTrader' },
+      desc: {
+        en: "A securities trading app embedded within BIDV SmartBanking, optimized for a seamless in-app experience consistent with BIDV's ecosystem.",
+        vi: 'Ứng dụng giao dịch chứng khoán tích hợp trong BIDV SmartBanking, tối ưu trải nghiệm nhúng và đồng nhất với hệ sinh thái BIDV.'
+      },
       tags: ['Figma', 'Design System'],
-      folder: 'bsc',
-      desc: 'Ứng dụng giao dịch chứng khoán tích hợp trong BIDV SmartBanking, tối ưu trải nghiệm nhúng và đồng nhất với hệ sinh thái BIDV.',
-      links: [
-        { type: 'design-system', label: 'Design System', url: 'images/bsc/BSC%20Design%20System.html' }
-      ]
+      href: '',
+      images: ['images/bsc/1.jpg','images/bsc/2.jpg','images/bsc/3.jpg','images/bsc/4.jpg','images/bsc/5.jpg','images/bsc/6.jpg','images/bsc/7.jpg'],
+      links: [ { type: 'design-system', url: 'images/bsc/BSC%20Design%20System.html' } ]
     },
     {
-      title: 'Kiggle',
-      href: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi',
-      featured: false,
+      order: 2, featured: false,
+      title: { en: 'Kiggle - Parent & Education Platform', vi: 'Kiggle' },
+      desc: {
+        en: 'A platform connecting parents, education partners, and operations in a single ecosystem. Designed the mobile app for parents to find classes, read reviews, and book lessons, plus the Partner Center web dashboard for partners to manage consultations, schedules, and payments. Owned UX/UI design across the entire journey, from the mobile app to the partner dashboard.',
+        vi: 'Nền tảng kết nối phụ huynh, đối tác giáo dục và vận hành trong một hệ sinh thái duy nhất. Thiết kế app di động cho phụ huynh tìm lớp, xem đánh giá và đặt lịch học; thiết kế web Partner Center giúp đối tác quản lý tư vấn, lịch dạy và thanh toán. Đảm nhận UX/UI Design cho toàn bộ hành trình, từ mobile app đến dashboard đối tác.'
+      },
       tags: ['Figma', 'Mobile App', 'Web Responsive'],
-      folder: 'kiggle',
-      desc: 'Nền tảng kết nối phụ huynh, đối tác giáo dục và vận hành trong một hệ sinh thái duy nhất. Thiết kế app di động cho phụ huynh tìm lớp, xem đánh giá và đặt lịch học; thiết kế web Partner Center giúp đối tác quản lý tư vấn, lịch dạy và thanh toán. Đảm nhận UX/UI Design cho toàn bộ hành trình, từ mobile app đến dashboard đối tác.',
+      href: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi',
+      images: ['images/kiggle/1.jpg','images/kiggle/2.jpg','images/kiggle/3.jpg','images/kiggle/4.jpg','images/kiggle/5.jpg','images/kiggle/10.jpg'],
       links: [
-        { type: 'appstore', label: 'Tải trên App Store', url: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi' },
-        { type: 'design-system', label: 'Design System', url: 'images/kiggle/Kiggle%20Design%20System.html' }
+        { type: 'appstore', url: 'https://apps.apple.com/vn/app/kiggle/id6758828213?l=vi' },
+        { type: 'design-system', url: 'images/kiggle/Kiggle%20Design%20System.html' }
       ]
     },
     {
-      title: 'PM Quản lý Bán hàng - kho Công ty TNHH XD và TM Tường Ngân',
-      href: '#',
-      featured: false,
+      order: 3, featured: false,
+      title: { en: 'Tuong Ngan - Sales & Warehouse Management', vi: 'PM Quản lý Bán hàng - kho Công ty TNHH XD và TM Tường Ngân' },
+      desc: {
+        en: 'Tuong Ngan is a sales, warehouse, and accounts-receivable management system for a building-materials trading business. I worked directly on business analysis, information architecture, UX/UI design, and prototype development to standardize workflows from product and quote management to order creation, inventory tracking, and receivables.',
+        vi: 'Tường Ngân là hệ thống quản lý bán hàng, kho và công nợ dành cho doanh nghiệp kinh doanh vật tư. Tôi trực tiếp tham gia phân tích nghiệp vụ, xây dựng cấu trúc thông tin, thiết kế UX/UI và phát triển prototype để chuẩn hóa các quy trình từ quản lý sản phẩm, báo giá, tạo phiếu bán đến theo dõi tồn kho và công nợ.'
+      },
       tags: ['Full-stack Solo', 'AI-Assisted Development', 'Laravel / PHP'],
-      folder: 'tuong-ngan',
-      desc: 'Tường Ngân là hệ thống quản lý bán hàng, kho và công nợ dành cho doanh nghiệp kinh doanh vật tư. Tôi trực tiếp tham gia phân tích nghiệp vụ, xây dựng cấu trúc thông tin, thiết kế UX/UI và phát triển prototype để chuẩn hóa các quy trình từ quản lý sản phẩm, báo giá, tạo phiếu bán đến theo dõi tồn kho và công nợ.',
-      links: [
-        { type: 'design-system', label: 'Design System', url: 'images/tuong-ngan/TN%20Design%20System.html' }
-      ]
+      href: '',
+      images: ['images/tuong-ngan/1.jpg','images/tuong-ngan/2.jpg','images/tuong-ngan/3.jpg','images/tuong-ngan/4.jpg','images/tuong-ngan/5.jpg','images/tuong-ngan/6.jpg','images/tuong-ngan/7.jpg','images/tuong-ngan/8.jpg'],
+      links: [ { type: 'design-system', url: 'images/tuong-ngan/TN%20Design%20System.html' } ]
     },
     {
-      title: 'PMW - Công ty cổ phần cấp nước Phú Mỹ',
-      href: '#',
-      featured: false,
+      order: 4, featured: false,
+      title: { en: 'PMW - Phu My Water Supply Website & Dashboard', vi: 'PMW - Công ty cổ phần cấp nước Phú Mỹ' },
+      desc: {
+        en: 'Designed the official website for Phu My Water Supply Joint Stock Company, fully responsive across all devices, along with a business-reporting dashboard system that shows performance data by region and customer segment, helping leadership monitor key metrics visually on both desktop and mobile.',
+        vi: 'Thiết kế website chính thức cho Công ty Cổ phần Cấp nước Phú Mỹ, chuẩn responsive trên mọi thiết bị, cùng hệ thống dashboard báo cáo số liệu kinh doanh theo khu vực và theo đối tượng khách hàng, giúp ban lãnh đạo theo dõi dữ liệu trực quan trên cả desktop và mobile.'
+      },
       tags: ['Web Responsive', 'Dashboard'],
-      folder: 'pmw',
-      desc: 'Thiết kế website chính thức cho Công ty Cổ phần Cấp nước Phú Mỹ, chuẩn responsive trên mọi thiết bị, cùng hệ thống dashboard báo cáo số liệu kinh doanh theo khu vực và theo đối tượng khách hàng, giúp ban lãnh đạo theo dõi dữ liệu trực quan trên cả desktop và mobile.',
+      href: 'https://www.pmw.vn',
+      images: ['images/pmw/1.jpg','images/pmw/2.jpg'],
       links: [
-        { type: 'website', label: 'Xem website', url: 'https://www.pmw.vn' },
-        { type: 'demo', label: 'Tổng hợp báo cáo', url: 'https://ductran146.github.io/pmw-dashboard/index.html' }
+        { type: 'website', url: 'https://www.pmw.vn' },
+        { type: 'demo', url: 'https://ductran146.github.io/pmw-dashboard/index.html' }
       ]
     },
     {
-      title: 'USTH - Trường ĐH Khoa học và Công nghệ Hà Nội',
-      href: 'https://usth.edu.vn',
-      featured: false,
+      order: 5, featured: false,
+      title: { en: 'USTH - University Website Redesign', vi: 'USTH - Trường ĐH Khoa học và Công nghệ Hà Nội' },
+      desc: {
+        en: 'I was the designer responsible for the entire web interface, handling the conversion from desktop layouts to mobile and tablet breakpoints, ensuring the layout, imagery, and news/event content displayed clearly at every screen size. The focus was on preserving the correct information hierarchy (admissions announcements, news, key figures), with every design adhering to a strict grid system and design standards.',
+        vi: 'Tôi là designer thiết kế toàn bộ các giao diện web, đảm nhận việc chuyển đổi giao diện desktop sang các breakpoint mobile/tablet, đảm bảo bố cục, hình ảnh và nội dung tin tức/sự kiện hiển thị mạch lạc trên mọi kích thước màn hình. Trọng tâm là giữ đúng thứ tự ưu tiên thông tin (thông báo tuyển sinh, tin tức, số liệu nổi bật). Mọi thiết kế đều đảm bảo đúng grid system, và đúng tiêu chuẩn.'
+      },
       tags: ['Web Flow', 'Responsive'],
-      folder: 'usth',
-      desc: 'Tôi là designer thiết kế toàn bộ các giao diện web, đảm nhận việc chuyển đổi giao diện desktop sang các breakpoint mobile/tablet, đảm bảo bố cục, hình ảnh và nội dung tin tức/sự kiện hiển thị mạch lạc trên mọi kích thước màn hình. Trọng tâm là giữ đúng thứ tự ưu tiên thông tin (thông báo tuyển sinh, tin tức, số liệu nổi bật). Mọi thiết kế đều đảm bảo đúng grid system, và đúng tiêu chuẩn.',
-      links: [
-        { type: 'website', label: 'Xem website', url: 'https://usth.edu.vn' }
-      ]
+      href: 'https://usth.edu.vn',
+      images: ['images/usth/1.jpg'],
+      links: [ { type: 'website', url: 'https://usth.edu.vn' } ]
     }
   ];
 
-  const PV2_MAX_IMAGES = 10;
+  let PROJECTS = FALLBACK_PROJECTS;
+  // currentLang drives which side of every {en, vi} field is shown; the
+  // language toggle button (in the sidebar) flips this and re-renders.
+  let currentLang = (localStorage.getItem('site_lang')) || 'en';
 
   function escAttr(str){
     return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  }
+  // localized-field getter: works for both {en, vi} objects and plain strings
+  // (plain strings pass straight through, so old-shaped data never breaks).
+  function tt(field){
+    if(field == null) return '';
+    if(typeof field === 'string') return field;
+    return field[currentLang] || field.en || field.vi || '';
   }
 
   function renderProjectCards(){
     const grid = document.getElementById('pv2Grid');
     if(!grid) return;
+    const noImagesHint = currentLang === 'vi'
+      ? 'Chưa có ảnh cho dự án này'
+      : 'No images added for this project yet';
+    const viewLabel = currentLang === 'vi' ? 'Xem ảnh dự án: ' : 'View project images: ';
     grid.innerHTML = PROJECTS.map((p, idx)=>{
-      const imgCount = Array.from({length: PV2_MAX_IMAGES}, (_, i)=>i + 1);
-      const images = imgCount.map(n=>'images/' + p.folder + '/' + n + '.jpg').join(',');
-      const tagsHtml = p.tags.map(t=>'<span>' + t + '</span>').join('');
+      const images = (p.images || []).join(',');
+      const tagsHtml = (p.tags || []).map(t=>'<span>' + t + '</span>').join('');
       return (
         '<div class="pv2-card' + (p.featured ? ' pv2-featured' : '') + ' reveal-scale" ' +
-             'data-images="' + images + '" data-idx="' + idx + '" ' +
-             'tabindex="0" role="button" aria-label="Xem ảnh dự án: ' + escAttr(p.title) + '">' +
+             'data-images="' + escAttr(images) + '" data-idx="' + idx + '" ' +
+             'tabindex="0" role="button" aria-label="' + viewLabel + escAttr(tt(p.title)) + '">' +
           '<div class="pv2-media">' +
             '<div class="pv2-placeholder">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 5-6 4 5"/><circle cx="8" cy="8" r="1.5"/></svg>' +
-              '<span>Thêm ảnh vào thư mục images/' + p.folder + '/ (1.jpg, 2.jpg… tối đa 10.jpg)</span>' +
+              '<span>' + noImagesHint + '</span>' +
             '</div>' +
             '<div class="pv2-gallery"></div>' +
             '<div class="pv2-tags">' + tagsHtml + '</div>' +
           '</div>' +
-          '<div class="pv2-title">' + p.title + '</div>' +
+          '<div class="pv2-title">' + tt(p.title) + '</div>' +
         '</div>'
       );
     }).join('');
+    attachCardInteractions();
+    // stagger + observe the freshly-rendered cards (the generic reveal-group
+    // wiring below runs once at page load, before Firestore data exists, so
+    // project cards need to be (re-)registered here every time they render).
+    Array.from(grid.children).forEach((child, i)=>{
+      child.style.transitionDelay = Math.min(i * 80, 480) + 'ms';
+      child.classList.remove('is-visible');
+      revealObserver.observe(child);
+    });
   }
-  renderProjectCards();
+
+  // ---------- load projects from Firestore, with graceful fallback ----------
+  async function loadProjects(){
+    try {
+      const [{ db }, { collection, getDocs, query, orderBy }] = await Promise.all([
+        import('./firebase-init.js'),
+        import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')
+      ]);
+      const snap = await getDocs(query(collection(db, 'projects'), orderBy('order', 'asc')));
+      if(!snap.empty){
+        PROJECTS = snap.docs.map(d => d.data());
+      }
+    } catch(err){
+      console.warn('Could not load projects from Firestore, showing fallback data.', err);
+    }
+    renderProjectCards();
+  }
+
+  // ---------- EN / VI language toggle ----------
+  function setLang(lang){
+    currentLang = lang;
+    localStorage.setItem('site_lang', lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('#langSwitch button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    renderProjectCards();
+  }
+  document.querySelectorAll('#langSwitch button').forEach(b=>{
+    b.addEventListener('click', ()=>setLang(b.dataset.lang));
+  });
+  setLang(currentLang); // instant paint with fallback data, in the right language
+  loadProjects(); // then swap in live Firestore data once it arrives
 
   // scroll reveal — staggered entrance for card groups (service, timeline,
   // portfolio, testimonial, ai-steps, tags), similar to the Drake demo
@@ -2416,15 +2502,15 @@
   });
 
   const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
-  const io = new IntersectionObserver((entries)=>{
+  const revealObserver = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){
         e.target.classList.add('is-visible');
-        io.unobserve(e.target);
+        revealObserver.unobserve(e.target);
       }
     });
   },{threshold:0.15});
-  revealEls.forEach(el=>io.observe(el));
+  revealEls.forEach(el=>revealObserver.observe(el));
 
   // skill orbs: reveal on view
   const skillOrbs = document.querySelectorAll('.skill-orb');
@@ -2667,12 +2753,22 @@
   let lbImages = [];
   let lbIndex = 0;
 
+  // Link label text comes from `type`, not from the data itself — this way
+  // the admin panel only needs a type + a URL per link, and the label always
+  // stays correctly translated regardless of which language is active.
+  const LB_LINK_LABELS = {
+    website: { en: 'Visit website', vi: 'Xem website' },
+    appstore: { en: 'Download on the App Store', vi: 'Tải trên App Store' },
+    demo: { en: 'View demo', vi: 'Xem demo' },
+    'design-system': { en: 'Design System', vi: 'Design System' }
+  };
   function renderLightboxLinks(links){
     if(!links || links.length === 0) return '';
     return links.map(l=>{
       const icon = LB_LINK_ICONS[l.type] || LB_LINK_ICONS.website;
+      const label = l.label ? tt(l.label) : tt(LB_LINK_LABELS[l.type] || LB_LINK_LABELS.website);
       return '<a class="pv2-lightbox-link" href="' + escAttr(l.url) + '" target="_blank" rel="noopener">' +
-        icon + '<span>' + l.label + '</span></a>';
+        icon + '<span>' + label + '</span></a>';
     }).join('');
   }
 
@@ -2689,8 +2785,8 @@
     if(!images || images.length === 0) return;
     lbImages = images;
     lbIndex = startIndex || 0;
-    lbPanelTitle.textContent = (project && project.title) || '';
-    lbPanelDesc.textContent = (project && project.desc) || '';
+    lbPanelTitle.textContent = tt(project && project.title);
+    lbPanelDesc.textContent = tt(project && project.desc);
     lbPanelTags.innerHTML = ((project && project.tags) || []).map(t=>'<span>' + t + '</span>').join('');
     lbLinks.innerHTML = renderLightboxLinks(project && project.links);
     updateLightboxView();
@@ -2714,98 +2810,109 @@
     if(e.key === 'ArrowRight') lbNext.click();
   });
 
-  document.querySelectorAll('.pv2-card[data-images]').forEach(card=>{
-    const project = PROJECTS[parseInt(card.dataset.idx, 10)];
-    const candidates = card.dataset.images.split(',').map(s=>s.trim()).filter(Boolean);
-    let loadedImages = [];
-    let active = 0;
+  // Wires up click/keyboard handling + the mini image-slideshow for every
+  // project card. Called from renderProjectCards() each time the grid is
+  // (re)built — on first Firestore load and again whenever the language
+  // toggle re-renders the grid — since replacing grid.innerHTML destroys the
+  // previous listeners along with the old card elements.
+  function attachCardInteractions(){
+    document.querySelectorAll('.pv2-card[data-images]').forEach(card=>{
+      const project = PROJECTS[parseInt(card.dataset.idx, 10)];
+      const candidates = card.dataset.images.split(',').map(s=>s.trim()).filter(Boolean);
+      let loadedImages = [];
+      let active = 0;
 
-    // opening the card: show the lightbox gallery if photos have loaded,
-    // otherwise fall back to the project's external link (if any).
-    function openCard(){
-      if(loadedImages.length > 0){
-        openLightbox(loadedImages, project, active);
-      } else if(project.href && /^https?:\/\//.test(project.href)){
-        window.open(project.href, '_blank', 'noopener');
+      // opening the card: show the lightbox gallery if photos have loaded,
+      // otherwise fall back to the project's external link (if any).
+      function openCard(){
+        if(loadedImages.length > 0){
+          openLightbox(loadedImages, project, active);
+        } else if(project.href && /^https?:\/\//.test(project.href)){
+          window.open(project.href, '_blank', 'noopener');
+        }
       }
-    }
-    card.addEventListener('click', openCard);
-    card.addEventListener('keydown', e=>{
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        openCard();
-      }
-    });
-
-    Promise.all(candidates.map(preloadImage)).then(results=>{
-      loadedImages = results.filter(Boolean);
-      if(loadedImages.length === 0) return; // keep placeholder as-is
-
-      const placeholder = card.querySelector('.pv2-placeholder');
-      const gallery = card.querySelector('.pv2-gallery');
-      if(!gallery) return;
-      if(placeholder) placeholder.style.display = 'none';
-
-      const slideEls = loadedImages.map((src, idx)=>{
-        const img = document.createElement('img');
-        img.className = 'pv2-gallery-slide' + (idx === 0 ? ' is-active' : '');
-        img.src = src;
-        img.alt = '';
-        gallery.appendChild(img);
-        return img;
-      });
-
-      if(loadedImages.length === 1) return; // no controls needed for a single photo
-
-      let dotEls = [];
-      function showSlide(i){
-        active = (i + slideEls.length) % slideEls.length;
-        slideEls.forEach((el, idx)=>el.classList.toggle('is-active', idx === active));
-        dotEls.forEach((el, idx)=>el.classList.toggle('is-active', idx === active));
-      }
-
-      function arrowSvg(direction){
-        const d = direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7';
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+d+'"/></svg>';
-      }
-      const prevBtn = document.createElement('button');
-      prevBtn.type = 'button';
-      prevBtn.className = 'pv2-gallery-arrow prev';
-      prevBtn.setAttribute('aria-label', 'Ảnh trước');
-      prevBtn.innerHTML = arrowSvg('prev');
-      const nextBtn = document.createElement('button');
-      nextBtn.type = 'button';
-      nextBtn.className = 'pv2-gallery-arrow next';
-      nextBtn.setAttribute('aria-label', 'Ảnh tiếp theo');
-      nextBtn.innerHTML = arrowSvg('next');
-      [prevBtn, nextBtn].forEach(btn=>{
-        btn.addEventListener('click', e=>{
+      card.addEventListener('click', openCard);
+      card.addEventListener('keydown', e=>{
+        if(e.key === 'Enter' || e.key === ' '){
           e.preventDefault();
-          e.stopPropagation();
-          showSlide(active + (btn === prevBtn ? -1 : 1));
-        });
+          openCard();
+        }
       });
-      gallery.appendChild(prevBtn);
-      gallery.appendChild(nextBtn);
 
-      const dotsWrap = document.createElement('div');
-      dotsWrap.className = 'pv2-gallery-dots';
-      dotEls = slideEls.map((_, idx)=>{
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'pv2-gallery-dot' + (idx === 0 ? ' is-active' : '');
-        dot.setAttribute('aria-label', 'Ảnh ' + (idx + 1));
-        dot.addEventListener('click', e=>{
-          e.preventDefault();
-          e.stopPropagation();
-          showSlide(idx);
+      Promise.all(candidates.map(preloadImage)).then(results=>{
+        loadedImages = results.filter(Boolean);
+        if(loadedImages.length === 0) return; // keep placeholder as-is
+
+        const placeholder = card.querySelector('.pv2-placeholder');
+        const gallery = card.querySelector('.pv2-gallery');
+        if(!gallery) return;
+        if(placeholder) placeholder.style.display = 'none';
+
+        const slideEls = loadedImages.map((src, idx)=>{
+          const img = document.createElement('img');
+          img.className = 'pv2-gallery-slide' + (idx === 0 ? ' is-active' : '');
+          img.src = src;
+          img.alt = '';
+          gallery.appendChild(img);
+          return img;
         });
-        dotsWrap.appendChild(dot);
-        return dot;
+
+        if(loadedImages.length === 1) return; // no controls needed for a single photo
+
+        const arrowPrevLabel = currentLang === 'vi' ? 'Ảnh trước' : 'Previous image';
+        const arrowNextLabel = currentLang === 'vi' ? 'Ảnh tiếp theo' : 'Next image';
+        const dotLabel = currentLang === 'vi' ? 'Ảnh ' : 'Image ';
+
+        let dotEls = [];
+        function showSlide(i){
+          active = (i + slideEls.length) % slideEls.length;
+          slideEls.forEach((el, idx)=>el.classList.toggle('is-active', idx === active));
+          dotEls.forEach((el, idx)=>el.classList.toggle('is-active', idx === active));
+        }
+
+        function arrowSvg(direction){
+          const d = direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7';
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+d+'"/></svg>';
+        }
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'pv2-gallery-arrow prev';
+        prevBtn.setAttribute('aria-label', arrowPrevLabel);
+        prevBtn.innerHTML = arrowSvg('prev');
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'pv2-gallery-arrow next';
+        nextBtn.setAttribute('aria-label', arrowNextLabel);
+        nextBtn.innerHTML = arrowSvg('next');
+        [prevBtn, nextBtn].forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            e.preventDefault();
+            e.stopPropagation();
+            showSlide(active + (btn === prevBtn ? -1 : 1));
+          });
+        });
+        gallery.appendChild(prevBtn);
+        gallery.appendChild(nextBtn);
+
+        const dotsWrap = document.createElement('div');
+        dotsWrap.className = 'pv2-gallery-dots';
+        dotEls = slideEls.map((_, idx)=>{
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'pv2-gallery-dot' + (idx === 0 ? ' is-active' : '');
+          dot.setAttribute('aria-label', dotLabel + (idx + 1));
+          dot.addEventListener('click', e=>{
+            e.preventDefault();
+            e.stopPropagation();
+            showSlide(idx);
+          });
+          dotsWrap.appendChild(dot);
+          return dot;
+        });
+        gallery.appendChild(dotsWrap);
       });
-      gallery.appendChild(dotsWrap);
     });
-  });
+  }
 </script>
 
 </body>
