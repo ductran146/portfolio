@@ -2084,6 +2084,30 @@
     });
   });
 
+  // scroll reveal — staggered entrance for card groups (service, timeline,
+  // portfolio, testimonial, ai-steps, tags), similar to the Drake demo.
+  // Declared early (before the Firestore/project section below) because
+  // renderProjectCards() calls revealObserver.observe() synchronously on
+  // first paint — referencing a const before this point would throw.
+  document.querySelectorAll('.reveal-group').forEach(group=>{
+    Array.from(group.children).forEach((child, i)=>{
+      if(child.classList.contains('reveal') || child.classList.contains('reveal-scale')){
+        child.style.transitionDelay = Math.min(i * 80, 480) + 'ms';
+      }
+    });
+  });
+
+  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('is-visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  },{threshold:0.15});
+  revealEls.forEach(el=>revealObserver.observe(el));
+
   // contact form(s): submit to Formspree via fetch so the visitor never leaves the page
   function wireFormspreeForm(form){
     if(!form) return;
@@ -2490,27 +2514,6 @@
   });
   setLang(currentLang); // instant paint with fallback data, in the right language
   loadProjects(); // then swap in live Firestore data once it arrives
-
-  // scroll reveal — staggered entrance for card groups (service, timeline,
-  // portfolio, testimonial, ai-steps, tags), similar to the Drake demo
-  document.querySelectorAll('.reveal-group').forEach(group=>{
-    Array.from(group.children).forEach((child, i)=>{
-      if(child.classList.contains('reveal') || child.classList.contains('reveal-scale')){
-        child.style.transitionDelay = Math.min(i * 80, 480) + 'ms';
-      }
-    });
-  });
-
-  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
-  const revealObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('is-visible');
-        revealObserver.unobserve(e.target);
-      }
-    });
-  },{threshold:0.15});
-  revealEls.forEach(el=>revealObserver.observe(el));
 
   // skill orbs: reveal on view
   const skillOrbs = document.querySelectorAll('.skill-orb');
