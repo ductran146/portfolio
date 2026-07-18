@@ -104,14 +104,20 @@
   .sb-be-box svg{width:12px;height:12px;stroke:currentColor;}
   .sb-be-text{font-family:var(--body);font-size:13px;color:var(--primary);}
 
-  .lang-switch{display:flex;gap:6px;margin-top:22px;}
-  .lang-switch button{
-    flex:1;font-family:var(--mono);font-size:11.5px;font-weight:var(--font-weight-semibold);letter-spacing:.05em;
-    padding:8px;border-radius:var(--radius-md);border:1px solid var(--border-strong);background:transparent;
-    color:var(--text-faint);cursor:pointer;transition:all .2s ease;
+  /* flag-based language switch — sits next to the Download CV button in
+     both the mobile top bar and the desktop fixed header. */
+  .lang-flags{display:flex;gap:8px;}
+  .lang-flags button{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;padding:0;
+    border:1px solid var(--border-strong);background:transparent;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+    cursor:pointer;transition:border-color .2s ease, opacity .2s ease, transform .2s ease;
+    opacity:.5;overflow:hidden;
   }
-  .lang-switch button:hover{color:var(--text);}
-  .lang-switch button.active{background:var(--gold);border-color:var(--gold);color:var(--bg-alt);}
+  .lang-flags button img{width:20px;height:20px;border-radius:50%;object-fit:cover;display:block;pointer-events:none;}
+  .lang-flags button:hover{transform:translateY(-1px);}
+  .lang-flags button.active{border-color:var(--gold);opacity:1;}
+  .lang-flags-desktop{display:none;}
 
   .sb-cta{
     margin-top:26px;text-align:center;background:var(--gold);color:var(--bg-alt);
@@ -238,6 +244,11 @@
     }
     .dl-cv-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
     .dl-cv-btn svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0;}
+    /* sits just left of the Download CV button; top offset (41px) centers
+       the smaller 34px flag circles against the 44px-tall CV button/hamburger. */
+    .lang-flags-desktop{
+      display:flex;position:fixed;top:41px;right:290px;z-index:301;
+    }
     .nav-fab span{width:16px;height:1.5px;background:var(--text);display:block;transition:all .3s ease;}
     .nav-fab.open{opacity:0;pointer-events:none;}
     .nav-fab.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
@@ -1127,6 +1138,10 @@
 <div class="mobile-bar">
   <div class="brand"><span class="mark"><svg viewBox="0 0 59 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.8" d="M14.7306 38.8849C14.7045 38.8717 14.6914 38.8453 14.6914 38.8321V21.829L5.04688 16.1965V44.5042L29.3086 58.6514V47.3865L14.7306 38.8849Z" fill="currentColor"/><path d="M54.3682 16.1965L44.7237 21.8289V38.832C44.7237 38.8584 44.7106 38.8717 44.6844 38.8849L30.1064 47.3864V58.6513L54.3682 44.5041V16.1965V16.1965Z" fill="currentColor"/><path opacity="0.8" d="M29.3085 40.908L25.7099 38.8057V32.4593C25.7099 32.4461 25.7099 32.4461 25.6968 32.4329L20.2529 29.2597V25.0552L29.3085 30.3306V40.908Z" fill="currentColor"/><path d="M30.1064 40.908L33.7051 38.8057V32.4593C33.7051 32.4461 33.7051 32.4461 33.7182 32.4329L39.1621 29.2597V25.0552L30.1064 30.3306V40.908Z" fill="currentColor"/><path opacity="0.6" d="M38.7563 24.3676L35.1577 22.2653L29.7269 25.4385C29.7138 25.4385 29.7138 25.4385 29.7007 25.4385L24.2569 22.2653L20.6582 24.3676L29.7138 29.643L38.7563 24.3676Z" fill="currentColor"/><path opacity="0.6" d="M5.45215 15.4959L15.0966 21.1283L20.0432 18.246L10.3987 12.6135L5.45215 15.4959Z" fill="currentColor"/><path opacity="0.6" d="M29.7146 1.34857L20.0439 6.98101L29.7015 12.6134C29.7146 12.6134 29.7277 12.6134 29.7277 12.6134L44.3057 21.115L53.9632 15.4826L29.7146 1.34857Z" fill="currentColor"/></svg></span> TRẦN MINH ĐỨC</div>
   <div class="mobile-bar-actions">
+    <div class="lang-flags" id="langFlagsMobile">
+      <button type="button" data-lang="en" aria-label="English" title="English"><img src="images/flags/uk.svg" alt="" loading="lazy"></button>
+      <button type="button" data-lang="vi" aria-label="Tiếng Việt" title="Tiếng Việt"><img src="images/flags/vn.svg" alt="" loading="lazy"></button>
+    </div>
     <a href="ductm-information.pdf" download class="dl-cv-btn-mobile" aria-label="Download CV">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
     </a>
@@ -1166,7 +1181,7 @@
       </a>
       <a href="#" onclick="return false;">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10.3" r="3"/><path d="M12 21s7-6.2 7-11.3A7 7 0 0 0 5 9.7C5 14.8 12 21 12 21Z"/></svg>
-        Hà Nội, Việt Nam
+        <span data-i18n="sb_location">Hà Nội, Việt Nam</span>
       </a>
     </div>
 
@@ -1179,50 +1194,50 @@
       </a>
     </div>
 
-    <div class="lang-switch" id="langSwitch">
-      <button type="button" data-lang="en">EN</button>
-      <button type="button" data-lang="vi">VI</button>
-    </div>
-
-    <a href="#contact" class="sb-cta" id="ctaTrigger">Trao đổi cơ hội hợp tác</a>
+    <a href="#contact" class="sb-cta" id="ctaTrigger" data-i18n="cta_title">Trao đổi cơ hội hợp tác</a>
 
     <!-- Persistent icon-only quick nav (always visible on desktop) -->
     <nav class="nav-pill" id="navPill">
-      <a href="#home" class="nav-link active" data-target="#home" aria-label="Trang chủ">
+      <a href="#home" class="nav-link active" data-target="#home" aria-label="Trang chủ" data-i18n-aria="nav_home">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M2 12.204c0-2.289 0-3.433.52-4.381c.518-.949 1.467-1.537 3.364-2.715l2-1.241C9.889 2.622 10.892 2 12 2c1.108 0 2.11.622 4.116 1.867l2 1.241c1.897 1.178 2.846 1.766 3.365 2.715c.519.948.519 2.092.519 4.38v1.522c0 3.9 0 5.851-1.172 7.063C19.657 22 17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.212C2 19.576 2 17.626 2 13.725v-1.521Z" opacity=".5"/><path d="M9.447 15.398a.75.75 0 0 0-.894 1.205A5.766 5.766 0 0 0 12 17.75a5.766 5.766 0 0 0 3.447-1.147a.75.75 0 0 0-.894-1.206A4.266 4.266 0 0 1 12 16.25a4.266 4.266 0 0 1-2.553-.852Z"/></g></svg>
       </a>
-      <a href="#portfolio" class="nav-link" data-target="#portfolio" aria-label="Dự án">
+      <a href="#portfolio" class="nav-link" data-target="#portfolio" aria-label="Dự án" data-i18n-aria="nav_portfolio">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M22 14v-2.202c0-2.632 0-3.949-.77-4.804a2.984 2.984 0 0 0-.224-.225C20.151 6 18.834 6 16.202 6h-.374c-1.153 0-1.73 0-2.268-.153a4 4 0 0 1-.848-.352C12.224 5.224 11.816 4.815 11 4l-.55-.55c-.274-.274-.41-.41-.554-.53a4 4 0 0 0-2.18-.903C7.53 2 7.336 2 6.95 2c-.883 0-1.324 0-1.692.07A4 4 0 0 0 2.07 5.257C2 5.626 2 6.068 2 6.95V14c0 3.771 0 5.657 1.172 6.828C4.343 22 6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172C22 19.657 22 17.771 22 14Z" opacity=".5"/><path d="M12.25 10a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Z"/></g></svg>
       </a>
       <a href="#ai" class="nav-link" data-target="#ai" aria-label="AI Workflow">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M11.5 10.5 9 4 6.5 10.5 0 13l6.5 2.5L9 22l2.5-6.5L18 13l-6.5-2.5Z"/><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9Zm0 6l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15Z" opacity=".5"/></g></svg>
       </a>
-      <a href="#skills" class="nav-link" data-target="#skills" aria-label="Kỹ năng">
+      <a href="#skills" class="nav-link" data-target="#skills" aria-label="Kỹ năng" data-i18n-aria="nav_skills">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M18.483 16.767A8.5 8.5 0 0 1 8.118 7.081a1.27 1.27 0 0 1-.113.097c-.28.213-.63.292-1.33.45l-.635.144c-2.46.557-3.69.835-3.983 1.776c-.292.94.546 1.921 2.223 3.882l.434.507c.476.557.715.836.822 1.18c.107.345.071.717-.001 1.46l-.066.677c-.253 2.617-.38 3.925.386 4.506c.766.582 1.918.052 4.22-1.009l.597-.274c.654-.302.981-.452 1.328-.452c.347 0 .674.15 1.329.452l.595.274c2.303 1.06 3.455 1.59 4.22 1.01c.767-.582.64-1.89.387-4.507l-.048-.487Z"/><path d="m9.153 5.408l-.328.588c-.36.646-.54.969-.82 1.182c.04-.03.077-.062.113-.097a8.5 8.5 0 0 0 10.366 9.686l-.02-.19c-.071-.743-.107-1.115 0-1.46c.107-.344.345-.623.822-1.18l.434-.507c1.677-1.96 2.515-2.941 2.222-3.882c-.292-.941-1.522-1.22-3.982-1.776l-.636-.144c-.699-.158-1.049-.237-1.33-.45c-.28-.213-.46-.536-.82-1.182l-.327-.588C13.58 3.136 12.947 2 12 2c-.947 0-1.58 1.136-2.847 3.408Z" opacity=".5"/></g></svg>
       </a>
-      <a href="#services" class="nav-link" data-target="#services" aria-label="Dịch vụ">
+      <a href="#services" class="nav-link" data-target="#services" aria-label="Dịch vụ" data-i18n-aria="nav_services_aria">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M4.979 9.685C2.993 8.891 2 8.494 2 8s.993-.89 2.979-1.685l2.808-1.123C9.773 4.397 10.767 4 12 4c1.234 0 2.227.397 4.213 1.192l2.808 1.123C21.007 7.109 22 7.506 22 8s-.993.89-2.979 1.685l-2.808 1.123C14.227 11.604 13.233 12 12 12c-1.234 0-2.227-.397-4.213-1.191L4.98 9.684Z"/><path d="m5.766 10l-.787.315C2.993 11.109 2 11.507 2 12c0 .493.993.89 2.979 1.685l2.808 1.123C9.773 15.604 10.767 16 12 16c1.234 0 2.227-.397 4.213-1.191l2.808-1.124C21.007 12.891 22 12.493 22 12c0-.493-.993-.89-2.979-1.685L18.234 10l-2.021.809C14.227 11.603 13.233 12 12 12c-1.234 0-2.227-.397-4.213-1.191L5.767 10Z" opacity=".7"/><path d="m5.766 14l-.787.315C2.993 15.109 2 15.507 2 16c0 .494.993.89 2.979 1.685l2.808 1.123C9.773 19.604 10.767 20 12 20c1.234 0 2.227-.397 4.213-1.192l2.808-1.123C21.007 16.891 22 16.494 22 16c0-.493-.993-.89-2.979-1.685L18.234 14l-2.021.809C14.227 15.603 13.233 16 12 16c-1.234 0-2.227-.397-4.213-1.191L5.767 14Z" opacity=".4"/></g></svg>
       </a>
-      <a href="#about" class="nav-link" data-target="#about" aria-label="Giới thiệu">
+      <a href="#about" class="nav-link" data-target="#about" aria-label="Giới thiệu" data-i18n-aria="nav_about">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><circle cx="12" cy="6" r="4"/><path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z" opacity=".5"/></g></svg>
       </a>
-      <a href="#resume" class="nav-link" data-target="#resume" aria-label="Kinh nghiệm">
+      <a href="#resume" class="nav-link" data-target="#resume" aria-label="Kinh nghiệm" data-i18n-aria="nav_resume">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="7.5" width="18" height="12.5" rx="3" opacity=".5"/><path d="M8.5 7.5V6.75A3.25 3.25 0 0 1 11.75 3.5h.5A3.25 3.25 0 0 1 15.5 6.75V7.5H14V6.75c0-.966-.784-1.75-1.75-1.75h-.5c-.966 0-1.75.784-1.75 1.75V7.5H8.5Z"/><rect x="3" y="12.25" width="18" height="1.6"/></g></svg>
       </a>
-      <a href="#testimonial" class="nav-link" data-target="#testimonial" aria-label="Đánh giá">
+      <a href="#testimonial" class="nav-link" data-target="#testimonial" aria-label="Đánh giá" data-i18n-aria="nav_testimonial">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path d="M7.25 9A.75.75 0 0 1 8 8.25h8a.75.75 0 0 1 0 1.5H8A.75.75 0 0 1 7.25 9m0 3.5a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5H8a.75.75 0 0 1-.75-.75"/></g></svg>
       </a>
-      <a href="#contact" class="nav-link" data-target="#contact" aria-label="Liên hệ">
+      <a href="#contact" class="nav-link" data-target="#contact" aria-label="Liên hệ" data-i18n-aria="nav_contact">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M14.2 3H9.8C5.652 3 3.577 3 2.289 4.318C1 5.636 1 7.758 1 12c0 4.243 0 6.364 1.289 7.682C3.577 21 5.652 21 9.8 21h4.4c4.148 0 6.223 0 7.511-1.318C23 18.364 23 16.242 23 12c0-4.243 0-6.364-1.289-7.682C20.423 3 18.348 3 14.2 3Z" opacity=".5"/><path d="M19.128 8.033a.825.825 0 0 0-1.056-1.268l-2.375 1.98c-1.026.855-1.738 1.447-2.34 1.833c-.582.375-.977.5-1.357.5s-.774-.125-1.357-.5c-.601-.386-1.314-.978-2.34-1.834L5.928 6.765a.825.825 0 0 0-1.056 1.268l2.416 2.014c.975.812 1.765 1.47 2.463 1.92c.726.466 1.434.762 2.25.762c.814 0 1.522-.296 2.248-.763c.698-.448 1.488-1.107 2.463-1.92l2.416-2.013Z"/></g></svg>
       </a>
     </nav>
+
+    <div class="lang-flags lang-flags-desktop" id="langFlagsDesktop">
+      <button type="button" data-lang="en" aria-label="English" title="English"><img src="images/flags/uk.svg" alt="" loading="lazy"></button>
+      <button type="button" data-lang="vi" aria-label="Tiếng Việt" title="Tiếng Việt"><img src="images/flags/vn.svg" alt="" loading="lazy"></button>
+    </div>
 
     <a href="ductm-information.pdf" download class="dl-cv-btn" aria-label="Download CV">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
       <span>Download CV</span>
     </a>
 
-    <button class="nav-fab" id="navToggle" aria-label="Mở menu" aria-expanded="false">
+    <button class="nav-fab" id="navToggle" aria-label="Mở menu" aria-expanded="false" data-i18n-aria="nav_toggle_aria">
       <span></span><span></span><span></span>
     </button>
 
@@ -1231,17 +1246,17 @@
     <nav class="sb-nav" id="sbNav">
       <div class="nav-panel-head">
         <span class="nav-panel-title">Menu</span>
-        <button class="nav-panel-close" id="navClose" aria-label="Đóng menu">
+        <button class="nav-panel-close" id="navClose" aria-label="Đóng menu" data-i18n-aria="nav_close_aria">
           <span></span><span></span><span></span>
         </button>
       </div>
       <a href="#home" class="nav-link active" data-target="#home">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M2 12.204c0-2.289 0-3.433.52-4.381c.518-.949 1.467-1.537 3.364-2.715l2-1.241C9.889 2.622 10.892 2 12 2c1.108 0 2.11.622 4.116 1.867l2 1.241c1.897 1.178 2.846 1.766 3.365 2.715c.519.948.519 2.092.519 4.38v1.522c0 3.9 0 5.851-1.172 7.063C19.657 22 17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.212C2 19.576 2 17.626 2 13.725v-1.521Z" opacity=".5"/><path d="M9.447 15.398a.75.75 0 0 0-.894 1.205A5.766 5.766 0 0 0 12 17.75a5.766 5.766 0 0 0 3.447-1.147a.75.75 0 0 0-.894-1.206A4.266 4.266 0 0 1 12 16.25a4.266 4.266 0 0 1-2.553-.852Z"/></g></svg>
-        <span class="nav-label">Trang chủ</span>
+        <span class="nav-label" data-i18n="nav_home">Trang chủ</span>
       </a>
       <a href="#portfolio" class="nav-link" data-target="#portfolio">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M22 14v-2.202c0-2.632 0-3.949-.77-4.804a2.984 2.984 0 0 0-.224-.225C20.151 6 18.834 6 16.202 6h-.374c-1.153 0-1.73 0-2.268-.153a4 4 0 0 1-.848-.352C12.224 5.224 11.816 4.815 11 4l-.55-.55c-.274-.274-.41-.41-.554-.53a4 4 0 0 0-2.18-.903C7.53 2 7.336 2 6.95 2c-.883 0-1.324 0-1.692.07A4 4 0 0 0 2.07 5.257C2 5.626 2 6.068 2 6.95V14c0 3.771 0 5.657 1.172 6.828C4.343 22 6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172C22 19.657 22 17.771 22 14Z" opacity=".5"/><path d="M12.25 10a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Z"/></g></svg>
-        <span class="nav-label">Dự án</span>
+        <span class="nav-label" data-i18n="nav_portfolio">Dự án</span>
       </a>
       <a href="#ai" class="nav-link" data-target="#ai">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M11.5 10.5 9 4 6.5 10.5 0 13l6.5 2.5L9 22l2.5-6.5L18 13l-6.5-2.5Z"/><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9Zm0 6l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15Z" opacity=".5"/></g></svg>
@@ -1249,27 +1264,27 @@
       </a>
       <a href="#skills" class="nav-link" data-target="#skills">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M18.483 16.767A8.5 8.5 0 0 1 8.118 7.081a1.27 1.27 0 0 1-.113.097c-.28.213-.63.292-1.33.45l-.635.144c-2.46.557-3.69.835-3.983 1.776c-.292.94.546 1.921 2.223 3.882l.434.507c.476.557.715.836.822 1.18c.107.345.071.717-.001 1.46l-.066.677c-.253 2.617-.38 3.925.386 4.506c.766.582 1.918.052 4.22-1.009l.597-.274c.654-.302.981-.452 1.328-.452c.347 0 .674.15 1.329.452l.595.274c2.303 1.06 3.455 1.59 4.22 1.01c.767-.582.64-1.89.387-4.507l-.048-.487Z"/><path d="m9.153 5.408l-.328.588c-.36.646-.54.969-.82 1.182c.04-.03.077-.062.113-.097a8.5 8.5 0 0 0 10.366 9.686l-.02-.19c-.071-.743-.107-1.115 0-1.46c.107-.344.345-.623.822-1.18l.434-.507c1.677-1.96 2.515-2.941 2.222-3.882c-.292-.941-1.522-1.22-3.982-1.776l-.636-.144c-.699-.158-1.049-.237-1.33-.45c-.28-.213-.46-.536-.82-1.182l-.327-.588C13.58 3.136 12.947 2 12 2c-.947 0-1.58 1.136-2.847 3.408Z" opacity=".5"/></g></svg>
-        <span class="nav-label">Kỹ năng</span>
+        <span class="nav-label" data-i18n="nav_skills">Kỹ năng</span>
       </a>
       <a href="#services" class="nav-link" data-target="#services">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M4.979 9.685C2.993 8.891 2 8.494 2 8s.993-.89 2.979-1.685l2.808-1.123C9.773 4.397 10.767 4 12 4c1.234 0 2.227.397 4.213 1.192l2.808 1.123C21.007 7.109 22 7.506 22 8s-.993.89-2.979 1.685l-2.808 1.123C14.227 11.604 13.233 12 12 12c-1.234 0-2.227-.397-4.213-1.191L4.98 9.684Z"/><path d="m5.766 10l-.787.315C2.993 11.109 2 11.507 2 12c0 .493.993.89 2.979 1.685l2.808 1.123C9.773 15.604 10.767 16 12 16c1.234 0 2.227-.397 4.213-1.191l2.808-1.124C21.007 12.891 22 12.493 22 12c0-.493-.993-.89-2.979-1.685L18.234 10l-2.021.809C14.227 11.603 13.233 12 12 12c-1.234 0-2.227-.397-4.213-1.191L5.767 10Z" opacity=".7"/><path d="m5.766 14l-.787.315C2.993 15.109 2 15.507 2 16c0 .494.993.89 2.979 1.685l2.808 1.123C9.773 19.604 10.767 20 12 20c1.234 0 2.227-.397 4.213-1.192l2.808-1.123C21.007 16.891 22 16.494 22 16c0-.493-.993-.89-2.979-1.685L18.234 14l-2.021.809C14.227 15.603 13.233 16 12 16c-1.234 0-2.227-.397-4.213-1.191L5.767 14Z" opacity=".4"/></g></svg>
-        <span class="nav-label">Chuyên môn</span>
+        <span class="nav-label" data-i18n="nav_services_label">Chuyên môn</span>
       </a>
       <a href="#about" class="nav-link" data-target="#about">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><circle cx="12" cy="6" r="4"/><path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z" opacity=".5"/></g></svg>
-        <span class="nav-label">Giới thiệu</span>
+        <span class="nav-label" data-i18n="nav_about">Giới thiệu</span>
       </a>
       <a href="#resume" class="nav-link" data-target="#resume">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="7.5" width="18" height="12.5" rx="3" opacity=".5"/><path d="M8.5 7.5V6.75A3.25 3.25 0 0 1 11.75 3.5h.5A3.25 3.25 0 0 1 15.5 6.75V7.5H14V6.75c0-.966-.784-1.75-1.75-1.75h-.5c-.966 0-1.75.784-1.75 1.75V7.5H8.5Z"/><rect x="3" y="12.25" width="18" height="1.6"/></g></svg>
-        <span class="nav-label">Kinh nghiệm</span>
+        <span class="nav-label" data-i18n="nav_resume">Kinh nghiệm</span>
       </a>
       <a href="#testimonial" class="nav-link" data-target="#testimonial">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path d="M7.25 9A.75.75 0 0 1 8 8.25h8a.75.75 0 0 1 0 1.5H8A.75.75 0 0 1 7.25 9m0 3.5a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5H8a.75.75 0 0 1-.75-.75"/></g></svg>
-        <span class="nav-label">Đánh giá</span>
+        <span class="nav-label" data-i18n="nav_testimonial">Đánh giá</span>
       </a>
       <a href="#contact" class="nav-link" data-target="#contact">
         <svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M14.2 3H9.8C5.652 3 3.577 3 2.289 4.318C1 5.636 1 7.758 1 12c0 4.243 0 6.364 1.289 7.682C3.577 21 5.652 21 9.8 21h4.4c4.148 0 6.223 0 7.511-1.318C23 18.364 23 16.242 23 12c0-4.243 0-6.364-1.289-7.682C20.423 3 18.348 3 14.2 3Z" opacity=".5"/><path d="M19.128 8.033a.825.825 0 0 0-1.056-1.268l-2.375 1.98c-1.026.855-1.738 1.447-2.34 1.833c-.582.375-.977.5-1.357.5s-.774-.125-1.357-.5c-.601-.386-1.314-.978-2.34-1.834L5.928 6.765a.825.825 0 0 0-1.056 1.268l2.416 2.014c.975.812 1.765 1.47 2.463 1.92c.726.466 1.434.762 2.25.762c.814 0 1.522-.296 2.248-.763c.698-.448 1.488-1.107 2.463-1.92l2.416-2.013Z"/></g></svg>
-        <span class="nav-label">Liên hệ</span>
+        <span class="nav-label" data-i18n="nav_contact">Liên hệ</span>
       </a>
 
       <div class="nav-visit-counter" id="navVisitCounter">
@@ -1335,13 +1350,13 @@
       <section id="home">
         <div class="home-col">
           <div class="home-eyebrow">Senior UX/UI Designer · Design System &amp; AI Workflow</div>
-          <h1 class="home-title" id="typeTitle" aria-label="Xây dựng design system tăng tốc thiết kế bằng AI. Thiết kế website responsive trên mọi thiết bị. Thiết kế mobile app hướng tới trải nghiệm người dùng."><span class="title-line" id="typeLine1"></span><span class="title-line" id="typeLine2"></span></h1>
-          <p class="home-desc">Thiết kế các sản phẩm tài chính, giao dịch chứng khoán và hệ thống doanh nghiệp phức tạp, với thế mạnh xây dựng Design System nhất quán, có khả năng mở rộng và tạo prototype gần với sản phẩm thật bằng Figma, HTML/CSS cùng AI.</p>
+          <h1 class="home-title" id="typeTitle" data-i18n-aria="home_title_aria" aria-label="Xây dựng design system tăng tốc thiết kế bằng AI. Thiết kế website responsive trên mọi thiết bị. Thiết kế mobile app hướng tới trải nghiệm người dùng."><span class="title-line" id="typeLine1"></span><span class="title-line" id="typeLine2"></span></h1>
+          <p class="home-desc" data-i18n="home_desc">Thiết kế các sản phẩm tài chính, giao dịch chứng khoán và hệ thống doanh nghiệp phức tạp, với thế mạnh xây dựng Design System nhất quán, có khả năng mở rộng và tạo prototype gần với sản phẩm thật bằng Figma, HTML/CSS cùng AI.</p>
 
           <div class="home-bottom">
             <div class="home-stats">
-              <div><div class="hs-num"><span class="hs-count" data-value="15">0</span>+</div><div class="hs-label">NĂM<br>KINH NGHIỆM</div></div>
-              <div><div class="hs-num"><span class="hs-count" data-value="200">0</span>+</div><div class="hs-label">DỰ ÁN <br> HOÀN THÀNH</div></div>
+              <div><div class="hs-num"><span class="hs-count" data-value="15">0</span>+</div><div class="hs-label" data-i18n="stat_years">NĂM<br>KINH NGHIỆM</div></div>
+              <div><div class="hs-num"><span class="hs-count" data-value="200">0</span>+</div><div class="hs-label" data-i18n="stat_projects">DỰ ÁN <br> HOÀN THÀNH</div></div>
             </div>
           </div>
 
@@ -1400,12 +1415,12 @@
 
         <div class="badge-spin-wrap">
           <span class="hero-divider-line hero-divider-left" aria-hidden="true"></span>
-          <a href="#portfolio" class="badge-spin" aria-label="Xem dự án — cuộn xuống phần Portfolio">
+          <a href="#portfolio" class="badge-spin" data-i18n-aria="badge_spin_aria" aria-label="Xem dự án — cuộn xuống phần Portfolio">
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <defs><path id="circlePath" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
               <circle cx="60" cy="60" r="46" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
               <text font-family="Inter" font-size="9.5" fill="var(--text-dim)" letter-spacing="2">
-                <textPath href="#circlePath">XEM DỰ ÁN • CUỘN XUỐNG • XEM DỰ ÁN • CUỘN XUỐNG •</textPath>
+                <textPath href="#circlePath" data-i18n="badge_spin_text">XEM DỰ ÁN • CUỘN XUỐNG • XEM DỰ ÁN • CUỘN XUỐNG •</textPath>
               </text>
             </svg>
             <div class="center" aria-hidden="true">↓</div>
@@ -1420,7 +1435,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             Portfolio
           </div>
-          <h2>Dự án <span class="accent">nổi bật</span></h2>
+          <h2 data-i18n="portfolio_h2">Dự án <span class="accent">nổi bật</span></h2>
         </div>
 
         <!-- Các thẻ dự án được tạo tự động bằng JS từ mảng PROJECTS
@@ -1431,41 +1446,41 @@
 
       <section id="ai">
         <div class="section-head reveal">
-          <div class="kicker">Quy trình làm việc</div>
-          <h2>Quy trình thiết kế được hỗ trợ bởi AI</h2>
-          <p class="section-sub">Kết hợp ChatGPT và Claude trong quá trình phân tích yêu cầu, khám phá phương án, rà soát tính nhất quán và tạo prototype HTML/CSS.</p>
+          <div class="kicker" data-i18n="ai_kicker">Quy trình làm việc</div>
+          <h2 data-i18n="ai_h2">Quy trình thiết kế được hỗ trợ bởi AI</h2>
+          <p class="section-sub" data-i18n="ai_sub">Kết hợp ChatGPT và Claude trong quá trình phân tích yêu cầu, khám phá phương án, rà soát tính nhất quán và tạo prototype HTML/CSS.</p>
         </div>
 
         <div class="ai-steps reveal-group">
           <div class="ai-step reveal">
-            <div class="idx">BƯỚC 01</div>
-            <h4>Phân tích & khám phá phương án</h4>
-            <p>Sử dụng AI để hỗ trợ làm rõ yêu cầu, phân tích luồng nghiệp vụ và khám phá nhiều hướng giải pháp trước khi phát triển wireframe hoặc giao diện chi tiết.</p>
+            <div class="idx" data-i18n="ai_step1_idx">BƯỚC 01</div>
+            <h4 data-i18n="ai_step1_h4">Phân tích & khám phá phương án</h4>
+            <p data-i18n="ai_step1_p">Sử dụng AI để hỗ trợ làm rõ yêu cầu, phân tích luồng nghiệp vụ và khám phá nhiều hướng giải pháp trước khi phát triển wireframe hoặc giao diện chi tiết.</p>
             <div class="tools"><span>User Flow</span><span>ChatGPT</span><span>Claude AI</span></div>
           </div>
           <div class="ai-step reveal">
-            <div class="idx">BƯỚC 02</div>
-            <h4>Thiết kế & chuẩn hóa hệ thống</h4>
-            <p>Phát triển giao diện từ wireframe đến UI hoàn chỉnh, đồng thời chuẩn hóa token, component, trạng thái và responsive pattern để đảm bảo tính nhất quán trên web và mobile.</p>
+            <div class="idx" data-i18n="ai_step2_idx">BƯỚC 02</div>
+            <h4 data-i18n="ai_step2_h4">Thiết kế & chuẩn hóa hệ thống</h4>
+            <p data-i18n="ai_step2_p">Phát triển giao diện từ wireframe đến UI hoàn chỉnh, đồng thời chuẩn hóa token, component, trạng thái và responsive pattern để đảm bảo tính nhất quán trên web và mobile.</p>
             <div class="tools"><span>UX/UI Design</span><span>Design System</span><span>Component</span><span>Responsive</span><span>Mobile App</span></div>
           </div>
           <div class="ai-step reveal">
-            <div class="idx">BƯỚC 03</div>
-            <h4>Prototype & kiểm chứng</h4>
-            <p>Chuyển thiết kế thành prototype tương tác bằng Figma hoặc HTML/CSS để kiểm tra luồng, responsive và trạng thái trước khi bàn giao cho đội phát triển.</p>
+            <div class="idx" data-i18n="ai_step3_idx">BƯỚC 03</div>
+            <h4 data-i18n="ai_step3_h4">Prototype & kiểm chứng</h4>
+            <p data-i18n="ai_step3_p">Chuyển thiết kế thành prototype tương tác bằng Figma hoặc HTML/CSS để kiểm tra luồng, responsive và trạng thái trước khi bàn giao cho đội phát triển.</p>
             <div class="tools"><span>Figma Prototype</span><span>HTML/CSS</span></div>
           </div>
         </div>
 
-        <div class="ai-note reveal">
+        <div class="ai-note reveal" data-i18n="ai_note">
           <strong>Ví dụ thực tế:</strong> Trong dự án <strong>Tường Ngân</strong> — hệ thống quản lý bán hàng, tồn kho và công nợ — tôi sử dụng AI để hỗ trợ phân tích nghiệp vụ, chuẩn hóa luồng thao tác và tạo prototype HTML/CSS có dữ liệu mẫu. Nhờ đó, các luồng phức tạp có thể được kiểm tra sớm trước khi bước vào giai đoạn phát triển chính thức.
         </div>
       </section>
 
       <section id="skills">
         <div class="section-head reveal">
-          <div class="kicker">Kỹ năng</div>
-          <h2>Thế mạnh của tôi</h2>
+          <div class="kicker" data-i18n="skills_kicker">Kỹ năng</div>
+          <h2 data-i18n="skills_h2">Thế mạnh của tôi</h2>
         </div>
         <div class="skills-orb-grid reveal" id="skillsList">
           <div class="skill-orb" data-value="92" style="--orb-glow:#A259FF;">
@@ -1538,8 +1553,8 @@
 
       <section id="services">
         <div class="section-head reveal">
-          <div class="kicker">Chuyên môn</div>
-          <h2>Năng lực nổi bật</h2>
+          <div class="kicker" data-i18n="services_kicker">Chuyên môn</div>
+          <h2 data-i18n="services_h2">Năng lực nổi bật</h2>
         </div>
         <div class="service-grid reveal-group">
           <div class="service-card reveal">
@@ -1565,7 +1580,7 @@
 	</g>
             </svg></div>
             <h4>Design System &amp; Design Tokens</h4>
-            <p>Xây dựng và chuẩn hóa Design System từ token, component, variant đến các pattern dùng chung cho web và mobile. Hệ thống được tổ chức với quy tắc đặt tên, trạng thái tương tác và tài liệu hướng dẫn rõ ràng, giúp đội ngũ thiết kế và phát triển mở rộng sản phẩm nhất quán hơn.</p>
+            <p data-i18n="service1_p">Xây dựng và chuẩn hóa Design System từ token, component, variant đến các pattern dùng chung cho web và mobile. Hệ thống được tổ chức với quy tắc đặt tên, trạng thái tương tác và tài liệu hướng dẫn rõ ràng, giúp đội ngũ thiết kế và phát triển mở rộng sản phẩm nhất quán hơn.</p>
           </div>
           <div class="service-card reveal">
             <div class="sc-num">02</div>
@@ -1602,7 +1617,7 @@
 	<circle cx="486" cy="336" r="57.5" pathLength="100" stroke-dashoffset="-65" transform="rotate(-90 486 336)" style="fill:none;stroke:var(--primary-dim);stroke-width:40;stroke-dasharray:35 100;"/>
             </svg></div>
             <h4>Dashboard &amp; Fintech</h4>
-            <p>Thiết kế UX/UI cho các sản phẩm chứng khoán, giao dịch tài chính và dashboard nhiều dữ liệu. Thế mạnh của tôi là tổ chức thông tin phức tạp thành luồng thao tác rõ ràng, giúp người dùng theo dõi dữ liệu và thực hiện tác vụ nhanh, chính xác hơn.</p>
+            <p data-i18n="service2_p">Thiết kế UX/UI cho các sản phẩm chứng khoán, giao dịch tài chính và dashboard nhiều dữ liệu. Thế mạnh của tôi là tổ chức thông tin phức tạp thành luồng thao tác rõ ràng, giúp người dùng theo dõi dữ liệu và thực hiện tác vụ nhanh, chính xác hơn.</p>
           </div>
           <div class="service-card reveal">
             <div class="sc-num">03</div>
@@ -1632,21 +1647,21 @@
 	</g>
             </svg></div>
             <h4>AI-Assisted Design &amp; Prototyping</h4>
-            <p>Kết hợp Figma, HTML/CSS, ChatGPT và Claude để khám phá phương án, kiểm tra luồng tương tác và tạo prototype gần với sản phẩm thật. AI giúp tăng tốc quy trình, trong khi các quyết định UX/UI vẫn dựa trên người dùng và bối cảnh nghiệp vụ.</p>
+            <p data-i18n="service3_p">Kết hợp Figma, HTML/CSS, ChatGPT và Claude để khám phá phương án, kiểm tra luồng tương tác và tạo prototype gần với sản phẩm thật. AI giúp tăng tốc quy trình, trong khi các quyết định UX/UI vẫn dựa trên người dùng và bối cảnh nghiệp vụ.</p>
           </div>
         </div>
       </section>
 
       <section id="about">
         <div class="section-head reveal">
-          <div class="kicker">Giới thiệu</div>
-          <h2>Biến những yêu cầu phức tạp<br>thành trải nghiệm rõ ràng, dễ dùng</h2>
+          <div class="kicker" data-i18n="about_kicker">Giới thiệu</div>
+          <h2 data-i18n="about_h2">Biến những yêu cầu phức tạp<br>thành trải nghiệm rõ ràng, dễ dùng</h2>
         </div>
         <div class="about-body reveal">
-          <p>Tôi tập trung thiết kế website, sản phẩm số và hệ thống quản trị doanh nghiệp dựa trên nhu cầu thực tế của người dùng và mục tiêu kinh doanh.</p>
-          <p>Thế mạnh của tôi là xây dựng <strong>Design System</strong>, chuẩn hóa design token và component để sản phẩm nhất quán, dễ phát triển và mở rộng.</p>
-          <p>Tôi cũng sử dụng <strong>ChatGPT</strong> và <strong>Claude AI</strong> để hỗ trợ nghiên cứu, phát triển ý tưởng, rà soát thiết kế và tạo prototype HTML/CSS. AI giúp đẩy nhanh quy trình, còn các quyết định về trải nghiệm và chất lượng sản phẩm vẫn được cân nhắc dựa trên bối cảnh thực tế.</p>
-          <p>Tôi mong muốn tìm kiếm thêm cơ hội để giải quyết những bài toán UX/UI có chiều sâu và cùng đội ngũ tạo ra các sản phẩm rõ ràng, hữu ích, bền vững.</p>
+          <p data-i18n="about_p1">Tôi tập trung thiết kế website, sản phẩm số và hệ thống quản trị doanh nghiệp dựa trên nhu cầu thực tế của người dùng và mục tiêu kinh doanh.</p>
+          <p data-i18n="about_p2">Thế mạnh của tôi là xây dựng <strong>Design System</strong>, chuẩn hóa design token và component để sản phẩm nhất quán, dễ phát triển và mở rộng.</p>
+          <p data-i18n="about_p3">Tôi cũng sử dụng <strong>ChatGPT</strong> và <strong>Claude AI</strong> để hỗ trợ nghiên cứu, phát triển ý tưởng, rà soát thiết kế và tạo prototype HTML/CSS. AI giúp đẩy nhanh quy trình, còn các quyết định về trải nghiệm và chất lượng sản phẩm vẫn được cân nhắc dựa trên bối cảnh thực tế.</p>
+          <p data-i18n="about_p4">Tôi mong muốn tìm kiếm thêm cơ hội để giải quyết những bài toán UX/UI có chiều sâu và cùng đội ngũ tạo ra các sản phẩm rõ ràng, hữu ích, bền vững.</p>
         </div>
         <div class="skill-tags reveal-group">
           <span class="tag reveal">Design System</span>
@@ -1661,8 +1676,8 @@
 
       <section id="resume">
         <div class="section-head reveal">
-          <div class="kicker">Kinh nghiệm</div>
-          <h2>Kinh nghiệm làm việc</h2>
+          <div class="kicker" data-i18n="resume_kicker">Kinh nghiệm</div>
+          <h2 data-i18n="resume_h2">Kinh nghiệm làm việc</h2>
         </div>
         <!-- Logo công ty: đặt file vào images/logos/ đúng tên trong mỗi
              src bên dưới. Thiếu ảnh sẽ tự hiện chữ viết tắt thay thế. -->
@@ -1687,16 +1702,16 @@
             </div>
               <div class="exp-head">
                 <div>
-                  <div class="exp-role">Chuyên viên Thiết kế UI Cấp cao</div>
-                  <div class="exp-org">Công ty Cổ phần Difisoft Việt Nam</div>
+                  <div class="exp-role" data-i18n="exp1_role">Chuyên viên Thiết kế UI Cấp cao</div>
+                  <div class="exp-org" data-i18n="exp1_org">Công ty Cổ phần Difisoft Việt Nam</div>
                 </div>
-                <div class="exp-date">Th12/2019 – Hiện tại</div>
+                <div class="exp-date" data-i18n="exp1_date">Th12/2019 – Hiện tại</div>
               </div>
             </div>
               <ul class="exp-bullets">
-                <li>Phối hợp với Product Owner để thiết kế UI, tương tác và hình ảnh cho các sản phẩm fintech</li>
-                <li>Thực hiện nghiên cứu người dùng, xây dựng user flow, định hướng chiến lược UX cho nền tảng mobile &amp; web</li>
-                <li>Thiết kế landing page và banner marketing cho các chiến dịch quảng bá số</li>
+                <li data-i18n="exp1_bullet1">Phối hợp với Product Owner để thiết kế UI, tương tác và hình ảnh cho các sản phẩm fintech</li>
+                <li data-i18n="exp1_bullet2">Thực hiện nghiên cứu người dùng, xây dựng user flow, định hướng chiến lược UX cho nền tảng mobile &amp; web</li>
+                <li data-i18n="exp1_bullet3">Thiết kế landing page và banner marketing cho các chiến dịch quảng bá số</li>
               </ul>
           </div>
           <div class="exp-item reveal">
@@ -1719,15 +1734,15 @@
             </div>
               <div class="exp-head">
                 <div>
-                  <div class="exp-role">Trưởng nhóm Thiết kế</div>
-                  <div class="exp-org">Công ty Cổ phần Công nghệ và Truyền thông CAIA</div>
+                  <div class="exp-role" data-i18n="exp_role_lead">Trưởng nhóm Thiết kế</div>
+                  <div class="exp-org" data-i18n="exp2_org">Công ty Cổ phần Công nghệ và Truyền thông CAIA</div>
                 </div>
-                <div class="exp-date">Th4/2014 – Th12/2019</div>
+                <div class="exp-date" data-i18n="exp2_date">Th4/2014 – Th12/2019</div>
               </div>
             </div>
               <ul class="exp-bullets">
-                <li>Dẫn dắt đội thiết kế thực hiện giao diện website, banner và hình ảnh cho nhiều khách hàng</li>
-                <li>Xây dựng hệ thống nhận diện thương hiệu hoàn chỉnh: logo, brochure, danh thiếp và brand guideline</li>
+                <li data-i18n="exp2_bullet1">Dẫn dắt đội thiết kế thực hiện giao diện website, banner và hình ảnh cho nhiều khách hàng</li>
+                <li data-i18n="exp2_bullet2">Xây dựng hệ thống nhận diện thương hiệu hoàn chỉnh: logo, brochure, danh thiếp và brand guideline</li>
               </ul>
           </div>
           <div class="exp-item reveal">
@@ -1737,15 +1752,15 @@
             </div>
               <div class="exp-head">
                 <div>
-                  <div class="exp-role">Trưởng nhóm Thiết kế</div>
-                  <div class="exp-org">Công ty Cổ phần Hurasoft</div>
+                  <div class="exp-role" data-i18n="exp_role_lead">Trưởng nhóm Thiết kế</div>
+                  <div class="exp-org" data-i18n="exp3_org">Công ty Cổ phần Hurasoft</div>
                 </div>
-                <div class="exp-date">Th4/2012 – Th4/2014</div>
+                <div class="exp-date" data-i18n="exp3_date">Th4/2012 – Th4/2014</div>
               </div>
             </div>
               <ul class="exp-bullets">
-                <li>Chỉ đạo sản xuất thiết kế giao diện web và tài sản hình ảnh cho khách hàng công ty</li>
-                <li>Thực hiện các ấn phẩm nhận diện thương hiệu bao gồm hệ thống logo và tài liệu in ấn</li>
+                <li data-i18n="exp3_bullet1">Chỉ đạo sản xuất thiết kế giao diện web và tài sản hình ảnh cho khách hàng công ty</li>
+                <li data-i18n="exp3_bullet2">Thực hiện các ấn phẩm nhận diện thương hiệu bao gồm hệ thống logo và tài liệu in ấn</li>
               </ul>
           </div>
           <div class="exp-item reveal">
@@ -1801,15 +1816,15 @@
             </div>
               <div class="exp-head">
                 <div>
-                  <div class="exp-role">Thiết kế Web &amp; Đồ hoạ</div>
-                  <div class="exp-org">Công ty TNHH Finalstyle</div>
+                  <div class="exp-role" data-i18n="exp4_role">Thiết kế Web &amp; Đồ hoạ</div>
+                  <div class="exp-org" data-i18n="exp4_org">Công ty TNHH Finalstyle</div>
                 </div>
-                <div class="exp-date">Th10/2009 – Th4/2012</div>
+                <div class="exp-date" data-i18n="exp4_date">Th10/2009 – Th4/2012</div>
               </div>
             </div>
               <ul class="exp-bullets">
-                <li>Thiết kế giao diện website, banner quảng cáo và tài sản hình ảnh cho các dự án khách hàng</li>
-                <li>Xây dựng bộ nhận diện thương hiệu và thực hiện prototype, mockup tương tác</li>
+                <li data-i18n="exp4_bullet1">Thiết kế giao diện website, banner quảng cáo và tài sản hình ảnh cho các dự án khách hàng</li>
+                <li data-i18n="exp4_bullet2">Xây dựng bộ nhận diện thương hiệu và thực hiện prototype, mockup tương tác</li>
               </ul>
           </div>
         </div>
@@ -1817,8 +1832,8 @@
 
       <section id="testimonial">
         <div class="section-head reveal">
-          <div class="kicker">Đánh giá</div>
-          <h2>Khách hàng nói gì</h2>
+          <div class="kicker" data-i18n="testimonial_kicker">Đánh giá</div>
+          <h2 data-i18n="testimonial_h2">Khách hàng nói gì</h2>
         </div>
         <!-- Ảnh đại diện thật: đặt file vào images/testimonials/ đặt tên
              1.jpg, 2.jpg, 3.jpg (khớp thứ tự thẻ bên dưới). Nếu ảnh chưa có,
@@ -1827,10 +1842,10 @@
           <div class="testi-viewport">
             <div class="testi-track" id="testiTrack">
               <div class="testi-card reveal">
-                <p class="testi-quote"><span class="testi-quote-text">"Tôi đánh giá Đức là một designer làm việc rất thông minh, chuyên nghiệp và có tinh thần trách nhiệm cao. Đức có khả năng nắm bắt yêu cầu cũng như hiểu ý đối tác rất nhanh, kể cả với những nội dung nghiệp vụ phức tạp, từ đó đề xuất được các phương án thiết kế phù hợp và có tính ứng dụng cao. Các sản phẩm do Đức thực hiện luôn được đầu tư kỹ lưỡng, có tính thẩm mỹ, hiện đại và thể hiện chuyên môn thiết kế UX/UI rất tốt. Đặc biệt, tốc độ xử lý công việc của Đức rất nhanh nhưng vẫn đảm bảo chất lượng, sự chỉn chu và luôn hoàn thành đúng tiến độ đã cam kết. Đây là một đối tác đáng tin cậy và rất chuyên nghiệp trong quá trình phối hợp triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
+                <p class="testi-quote"><span class="testi-quote-text" data-i18n="testi1_quote">"Tôi đánh giá Đức là một designer làm việc rất thông minh, chuyên nghiệp và có tinh thần trách nhiệm cao. Đức có khả năng nắm bắt yêu cầu cũng như hiểu ý đối tác rất nhanh, kể cả với những nội dung nghiệp vụ phức tạp, từ đó đề xuất được các phương án thiết kế phù hợp và có tính ứng dụng cao. Các sản phẩm do Đức thực hiện luôn được đầu tư kỹ lưỡng, có tính thẩm mỹ, hiện đại và thể hiện chuyên môn thiết kế UX/UI rất tốt. Đặc biệt, tốc độ xử lý công việc của Đức rất nhanh nhưng vẫn đảm bảo chất lượng, sự chỉn chu và luôn hoàn thành đúng tiến độ đã cam kết. Đây là một đối tác đáng tin cậy và rất chuyên nghiệp trong quá trình phối hợp triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
                   <img class="testi-avatar" src="images/testimonials/1.jpg" alt="Chị Hạnh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'H'}))">
-                  <div><div class="testi-name">Chị Hạnh</div><div class="testi-role">Phó trưởng Phòng Chuyển đổi số- Công ty cổ phần chứng khoán BIDV - BSC</div></div>
+                  <div><div class="testi-name">Chị Hạnh</div><div class="testi-role" data-i18n="testi1_role">Phó trưởng Phòng Chuyển đổi số- Công ty cổ phần chứng khoán BIDV - BSC</div></div>
                 </div>
               </div>
               <div class="testi-card reveal">
@@ -1841,26 +1856,26 @@
                 </div>
               </div>
               <div class="testi-card reveal">
-                <p class="testi-quote"><span class="testi-quote-text">"Đức là một designer làm việc chuyên nghiệp, trách nhiệm và luôn đảm bảo đúng tiến độ. Trong quá trình triển khai hệ thống quản lý số liệu và datalogger ngành nước, Đức nắm bắt yêu cầu nghiệp vụ nhanh, chủ động đề xuất các giải pháp thiết kế rõ ràng, phù hợp với thực tế vận hành và dễ sử dụng. Các sản phẩm được thực hiện chỉn chu, hiện đại, có tính ứng dụng cao và hỗ trợ tốt cho việc theo dõi, quản lý dữ liệu. Tôi đánh giá cao khả năng phối hợp, tốc độ xử lý công việc cũng như sự cam kết của Đức trong suốt quá trình triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
+                <p class="testi-quote"><span class="testi-quote-text" data-i18n="testi3_quote">"Đức là một designer làm việc chuyên nghiệp, trách nhiệm và luôn đảm bảo đúng tiến độ. Trong quá trình triển khai hệ thống quản lý số liệu và datalogger ngành nước, Đức nắm bắt yêu cầu nghiệp vụ nhanh, chủ động đề xuất các giải pháp thiết kế rõ ràng, phù hợp với thực tế vận hành và dễ sử dụng. Các sản phẩm được thực hiện chỉn chu, hiện đại, có tính ứng dụng cao và hỗ trợ tốt cho việc theo dõi, quản lý dữ liệu. Tôi đánh giá cao khả năng phối hợp, tốc độ xử lý công việc cũng như sự cam kết của Đức trong suốt quá trình triển khai dự án."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
                   <img class="testi-avatar" src="images/testimonials/2.jpg" alt="Anh Nguyễn Tấn Long" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'TL'}))">
-                  <div><div class="testi-name">Anh Nguyễn Tấn Long</div><div class="testi-role">GĐKD Công ty cổ phẩn cấp nước Phú Mỹ</div></div>
+                  <div><div class="testi-name">Anh Nguyễn Tấn Long</div><div class="testi-role" data-i18n="testi3_role">GĐKD Công ty cổ phẩn cấp nước Phú Mỹ</div></div>
                 </div>
               </div>
               <div class="testi-card reveal">
-                <p class="testi-quote"><span class="testi-quote-text">"Ban đầu, Đức hợp tác với công ty trong vai trò cộng tác viên. Tuy nhiên, bằng sự chuyên nghiệp, chỉn chu và tinh thần hỗ trợ khách hàng tận tâm, Đức đã nhanh chóng tạo được niềm tin trong quá trình làm việc. Đức luôn chủ động lắng nghe, nắm bắt yêu cầu và phối hợp trách nhiệm để hoàn thiện sản phẩm đúng kỳ vọng. Từ những kết quả tích cực ban đầu, công ty đã tin tưởng giao cho Đức phụ trách thiết kế giao diện cho nhiều hệ thống quản lý và dự án tiếp theo."</span><button type="button" class="testi-more">Xem thêm</button></p>
+                <p class="testi-quote"><span class="testi-quote-text" data-i18n="testi4_quote">"Ban đầu, Đức hợp tác với công ty trong vai trò cộng tác viên. Tuy nhiên, bằng sự chuyên nghiệp, chỉn chu và tinh thần hỗ trợ khách hàng tận tâm, Đức đã nhanh chóng tạo được niềm tin trong quá trình làm việc. Đức luôn chủ động lắng nghe, nắm bắt yêu cầu và phối hợp trách nhiệm để hoàn thiện sản phẩm đúng kỳ vọng. Từ những kết quả tích cực ban đầu, công ty đã tin tưởng giao cho Đức phụ trách thiết kế giao diện cho nhiều hệ thống quản lý và dự án tiếp theo."</span><button type="button" class="testi-more">Xem thêm</button></p>
                 <div class="testi-person">
                   <img class="testi-avatar" src="images/testimonials/3.jpg" alt="Anh Trần Vinh" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'testi-avatar testi-avatar-fallback',textContent:'TV'}))">
-                  <div><div class="testi-name">Anh Trần Vinh</div><div class="testi-role">Công ty Cổ phần Cấp nước Bà Rịa - Vũng Tàu</div></div>
+                  <div><div class="testi-name">Anh Trần Vinh</div><div class="testi-role" data-i18n="testi4_role">Công ty Cổ phần Cấp nước Bà Rịa - Vũng Tàu</div></div>
                 </div>
               </div>
             </div>
           </div>
           <div class="testi-nav-row">
-            <button type="button" class="testi-nav prev" id="testiPrev" aria-label="Đánh giá trước">
+            <button type="button" class="testi-nav prev" id="testiPrev" aria-label="Đánh giá trước" data-i18n-aria="testi_prev_aria">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
             </button>
-            <button type="button" class="testi-nav next" id="testiNext" aria-label="Đánh giá tiếp theo">
+            <button type="button" class="testi-nav next" id="testiNext" aria-label="Đánh giá tiếp theo" data-i18n-aria="testi_next_aria">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
             </button>
           </div>
@@ -1869,8 +1884,8 @@
 
       <section id="clients">
         <div class="section-head reveal">
-          <div class="kicker">Đối tác</div>
-          <h2>Khách hàng đã hợp tác</h2>
+          <div class="kicker" data-i18n="clients_kicker">Đối tác</div>
+          <h2 data-i18n="clients_h2">Khách hàng đã hợp tác</h2>
         </div>
         <div class="clients-grid reveal-group">
           <div class="client-logo reveal">
@@ -2007,9 +2022,9 @@
 
       <section id="contact">
         <div class="section-head reveal">
-          <div class="kicker">Liên hệ</div>
-          <h2>Cùng trao đổi về cơ hội hợp tác</h2>
-          <p class="section-sub">Nếu bạn đang tìm một Senior UX/UI Designer cho đội ngũ hoặc có một sản phẩm cần được thiết kế rõ ràng, dễ sử dụng và nhất quán hơn, hãy liên hệ với tôi. Tôi rất sẵn lòng lắng nghe và trao đổi cùng bạn.</p>
+          <div class="kicker" data-i18n="contact_kicker">Liên hệ</div>
+          <h2 data-i18n="contact_h2">Cùng trao đổi về cơ hội hợp tác</h2>
+          <p class="section-sub" data-i18n="contact_sub">Nếu bạn đang tìm một Senior UX/UI Designer cho đội ngũ hoặc có một sản phẩm cần được thiết kế rõ ràng, dễ sử dụng và nhất quán hơn, hãy liên hệ với tôi. Tôi rất sẵn lòng lắng nghe và trao đổi cùng bạn.</p>
         </div>
         <div class="contact-shell">
           <div class="reveal">
@@ -2033,12 +2048,12 @@
             </div>
           </div>
           <form class="form-shell reveal" id="contactForm" action="https://formspree.io/f/xvzezwvp" method="POST">
-            <div class="f-group"><label>Họ và tên</label><input type="text" name="name" placeholder="Nhập tên của bạn" required></div>
-            <div class="f-group"><label>Email</label><input type="email" name="email" placeholder="Nhập email" required></div>
-            <div class="f-group"><label>Lời nhắn</label><textarea name="message" placeholder="Nội dung yêu cầu" required></textarea></div>
+            <div class="f-group"><label data-i18n="form_name_label">Họ và tên</label><input type="text" name="name" data-i18n-placeholder="form_name_placeholder" placeholder="Nhập tên của bạn" required></div>
+            <div class="f-group"><label>Email</label><input type="email" name="email" data-i18n-placeholder="form_email_placeholder" placeholder="Nhập email" required></div>
+            <div class="f-group"><label data-i18n="form_message_label">Lời nhắn</label><textarea name="message" data-i18n-placeholder="form_message_placeholder" placeholder="Nội dung yêu cầu" required></textarea></div>
             <input type="hidden" name="_subject" value="Lời nhắn mới từ Portfolio">
             <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-            <button class="form-submit" type="submit">Gửi lời nhắn</button>
+            <button class="form-submit" type="submit" data-i18n="form_submit_contact">Gửi lời nhắn</button>
             <p class="form-status" id="formStatus" aria-live="polite"></p>
           </form>
         </div>
@@ -2051,18 +2066,18 @@
 
 <div class="cta-modal-overlay" id="ctaModalOverlay">
   <div class="cta-modal">
-    <button type="button" class="cta-modal-close" id="ctaModalClose" aria-label="Đóng">
+    <button type="button" class="cta-modal-close" id="ctaModalClose" aria-label="Đóng" data-i18n-aria="cta_close_aria">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
-    <h3>Trao đổi cơ hội hợp tác</h3>
-    <p class="cta-modal-sub">Để lại thông tin, tôi sẽ phản hồi trong thời gian sớm nhất.</p>
+    <h3 data-i18n="cta_title">Trao đổi cơ hội hợp tác</h3>
+    <p class="cta-modal-sub" data-i18n="cta_sub">Để lại thông tin, tôi sẽ phản hồi trong thời gian sớm nhất.</p>
     <form class="form-shell" id="ctaModalForm" action="https://formspree.io/f/xvzezwvp" method="POST">
-      <div class="f-group"><label>Họ và tên</label><input type="text" name="name" placeholder="Nhập tên của bạn" required></div>
-      <div class="f-group"><label>Email</label><input type="email" name="email" placeholder="Nhập email" required></div>
-      <div class="f-group"><label>Lời nhắn</label><textarea name="message" placeholder="Bạn muốn trao đổi cơ hội hợp tác gì?" required></textarea></div>
+      <div class="f-group"><label data-i18n="form_name_label">Họ và tên</label><input type="text" name="name" data-i18n-placeholder="form_name_placeholder" placeholder="Nhập tên của bạn" required></div>
+      <div class="f-group"><label>Email</label><input type="email" name="email" data-i18n-placeholder="form_email_placeholder" placeholder="Nhập email" required></div>
+      <div class="f-group"><label data-i18n="form_message_label">Lời nhắn</label><textarea name="message" data-i18n-placeholder="form_message_placeholder_cta" placeholder="Bạn muốn trao đổi cơ hội hợp tác gì?" required></textarea></div>
       <input type="hidden" name="_subject" value="Cơ hội hợp tác mới từ Portfolio">
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-      <button class="form-submit" type="submit">Gửi thông tin</button>
+      <button class="form-submit" type="submit" data-i18n="form_submit_cta">Gửi thông tin</button>
       <p class="form-status" id="ctaModalStatus" aria-live="polite"></p>
     </form>
   </div>
@@ -2083,6 +2098,14 @@
       closeNavPanel();
     });
   });
+
+  // currentLang drives which side of every {en, vi} field is shown (project
+  // cards, hero taglines, static data-i18n content, etc). Declared this early
+  // — before typewriterHero and the reveal observer below — because
+  // typewriterHero reads it synchronously on first paint; a `let` declared
+  // further down would still be in its temporal dead zone at that point and
+  // throw (same class of bug as the revealObserver ordering note below).
+  let currentLang = (localStorage.getItem('site_lang')) || 'en';
 
   // scroll reveal — staggered entrance for card groups (service, timeline,
   // portfolio, testimonial, ai-steps, tags), similar to the Drake demo.
@@ -2118,7 +2141,7 @@
       if(statusEl){ statusEl.className = 'form-status'; statusEl.textContent = ''; }
       submitBtn.disabled = true;
       const originalLabel = submitBtn.textContent;
-      submitBtn.textContent = 'Đang gửi...';
+      submitBtn.textContent = currentLang === 'vi' ? 'Đang gửi...' : 'Sending...';
       fetch(form.action, {
         method: 'POST',
         body: new FormData(form),
@@ -2126,19 +2149,23 @@
       }).then(response => {
         if(response.ok){
           if(statusEl){
-            statusEl.textContent = 'Đã gửi thành công! Cảm ơn bạn, tôi sẽ phản hồi sớm nhất.';
+            statusEl.textContent = currentLang === 'vi'
+              ? 'Đã gửi thành công! Cảm ơn bạn, tôi sẽ phản hồi sớm nhất.'
+              : 'Sent successfully! Thanks — I’ll get back to you soon.';
             statusEl.className = 'form-status ok';
           }
           form.reset();
         } else {
           return response.json().then(data => {
-            const msg = (data && data.errors) ? data.errors.map(x=>x.message).join(', ') : 'Có lỗi xảy ra, vui lòng thử lại.';
+            const msg = (data && data.errors) ? data.errors.map(x=>x.message).join(', ') : (currentLang === 'vi' ? 'Có lỗi xảy ra, vui lòng thử lại.' : 'Something went wrong, please try again.');
             if(statusEl){ statusEl.textContent = msg; statusEl.className = 'form-status err'; }
           });
         }
       }).catch(() => {
         if(statusEl){
-          statusEl.textContent = 'Không thể gửi lúc này. Vui lòng thử lại hoặc email trực tiếp.';
+          statusEl.textContent = currentLang === 'vi'
+            ? 'Không thể gửi lúc này. Vui lòng thử lại hoặc email trực tiếp.'
+            : 'Could not send right now. Please try again or email me directly.';
           statusEl.className = 'form-status err';
         }
       }).finally(() => {
@@ -2202,37 +2229,69 @@
     const line2 = document.getElementById('typeLine2');
     if(!line1 || !line2) return;
 
-    const taglines = [
-      { parts: [
-        { line: 1, text: 'Xây dựng ', em: false },
-        { line: 1, text: 'design system', em: true },
-        { line: 2, text: 'tăng tốc ', em: false },
-        { line: 2, text: 'thiết kế bằng AI.', em: true }
-      ]},
-      { parts: [
-        { line: 1, text: 'Thiết kế ', em: false },
-        { line: 1, text: 'website responsive', em: true },
-        { line: 2, text: 'trên mọi thiết bị.', em: false }
-      ]},
-      { parts: [
-        { line: 1, text: 'Thiết kế mobile app hướng tới', em: false },
-        { line: 2, text: 'trải nghiệm người dùng.', em: true }
-      ]}
-    ];
+    // Bilingual taglines — English and Vietnamese kept in sync (same 2-line /
+    // emphasis structure) so setLang() can swap the whole rotation without
+    // reshaping the animation logic below.
+    const TAGLINES = {
+      vi: [
+        { parts: [
+          { line: 1, text: 'Xây dựng ', em: false },
+          { line: 1, text: 'design system', em: true },
+          { line: 2, text: 'tăng tốc ', em: false },
+          { line: 2, text: 'thiết kế bằng AI.', em: true }
+        ]},
+        { parts: [
+          { line: 1, text: 'Thiết kế ', em: false },
+          { line: 1, text: 'website responsive', em: true },
+          { line: 2, text: 'trên mọi thiết bị.', em: false }
+        ]},
+        { parts: [
+          { line: 1, text: 'Thiết kế mobile app hướng tới', em: false },
+          { line: 2, text: 'trải nghiệm người dùng.', em: true }
+        ]}
+      ],
+      en: [
+        { parts: [
+          { line: 1, text: 'Building ', em: false },
+          { line: 1, text: 'design systems', em: true },
+          { line: 2, text: 'that accelerate ', em: false },
+          { line: 2, text: 'design with AI.', em: true }
+        ]},
+        { parts: [
+          { line: 1, text: 'Designing ', em: false },
+          { line: 1, text: 'responsive websites', em: true },
+          { line: 2, text: 'for every device.', em: false }
+        ]},
+        { parts: [
+          { line: 1, text: 'Designing mobile apps focused on', em: false },
+          { line: 2, text: 'user experience.', em: true }
+        ]}
+      ]
+    };
+
+    function currentTaglines(){
+      return TAGLINES[typeof currentLang !== 'undefined' ? currentLang : 'en'] || TAGLINES.en;
+    }
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduceMotion){
       // static, no rotation — just render the first tagline once
-      taglines[0].parts.forEach(part=>{
-        const target = part.line === 1 ? line1 : line2;
-        if(part.em){
-          const em = document.createElement('em');
-          em.textContent = part.text;
-          target.appendChild(em);
-        } else {
-          target.appendChild(document.createTextNode(part.text));
-        }
-      });
+      function renderStatic(){
+        line1.innerHTML = '';
+        line2.innerHTML = '';
+        currentTaglines()[0].parts.forEach(part=>{
+          const target = part.line === 1 ? line1 : line2;
+          if(part.em){
+            const em = document.createElement('em');
+            em.textContent = part.text;
+            target.appendChild(em);
+          } else {
+            target.appendChild(document.createTextNode(part.text));
+          }
+        });
+      }
+      renderStatic();
+      window.__restartTypewriterHero = renderStatic;
       return;
     }
 
@@ -2240,6 +2299,7 @@
     cursor.className = 'type-cursor';
     line1.appendChild(cursor);
 
+    let taglines = currentTaglines();
     let taglineIndex = 0;
     // guards against any stray/late timer callback (e.g. from a superseded
     // cycle) ever touching the DOM after a newer cycle has already started —
@@ -2310,6 +2370,20 @@
       taglineIndex = (taglineIndex + 1) % taglines.length;
       setTimeout(typeTagline, 550);
     }
+
+    // called from setLang() whenever the language switches — swaps in the
+    // other language's tagline set and restarts the typing cycle from
+    // scratch, cancelling whatever the current cycle was mid-typing.
+    function restart(){
+      cycleId++; // invalidate any in-flight step()/clearAndAdvance timer
+      taglines = currentTaglines();
+      taglineIndex = 0;
+      while(line1.firstChild) line1.removeChild(line1.firstChild);
+      while(line2.firstChild) line2.removeChild(line2.firstChild);
+      line1.appendChild(cursor);
+      setTimeout(typeTagline, 300);
+    }
+    window.__restartTypewriterHero = restart;
 
     setTimeout(typeTagline, 450);
   })();
@@ -2430,9 +2504,8 @@
   ];
 
   let PROJECTS = FALLBACK_PROJECTS;
-  // currentLang drives which side of every {en, vi} field is shown; the
-  // language toggle button (in the sidebar) flips this and re-renders.
-  let currentLang = (localStorage.getItem('site_lang')) || 'en';
+  // (currentLang itself is declared near the top of this script, before
+  // typewriterHero — see the comment there for why.)
 
   function escAttr(str){
     return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -2499,17 +2572,166 @@
     renderProjectCards();
   }
 
-  // ---------- EN / VI language toggle ----------
+  // ---------- Site-wide static translation (data-i18n attributes) ----------
+  // The HTML above is authored in Vietnamese, so every [data-i18n] /
+  // [data-i18n-aria] / [data-i18n-placeholder] element's original Vietnamese
+  // content is snapshotted once here (before any language switch happens).
+  // I18N_EN supplies the English replacement for each key; anything not
+  // listed here just keeps showing its original Vietnamese (used for
+  // content — like icon tags or already-English text — that never needed
+  // a translated counterpart).
+  const I18N_VI_CACHE = {};
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(!(key in I18N_VI_CACHE)) I18N_VI_CACHE[key] = el.innerHTML;
+  });
+  const I18N_VI_ARIA_CACHE = {};
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+    const key = el.dataset.i18nAria;
+    if(!(key in I18N_VI_ARIA_CACHE)) I18N_VI_ARIA_CACHE[key] = el.getAttribute('aria-label') || '';
+  });
+  const I18N_VI_PLACEHOLDER_CACHE = {};
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const key = el.dataset.i18nPlaceholder;
+    if(!(key in I18N_VI_PLACEHOLDER_CACHE)) I18N_VI_PLACEHOLDER_CACHE[key] = el.getAttribute('placeholder') || '';
+  });
+
+  const I18N_EN = {
+    nav_home: 'Home',
+    nav_portfolio: 'Projects',
+    nav_skills: 'Skills',
+    nav_services_label: 'Expertise',
+    nav_services_aria: 'Services',
+    nav_about: 'About',
+    nav_resume: 'Experience',
+    nav_testimonial: 'Testimonials',
+    nav_contact: 'Contact',
+    nav_close_aria: 'Close menu',
+    nav_toggle_aria: 'Open menu',
+    sb_location: 'Hanoi, Vietnam',
+    cta_title: 'Let’s Talk About a Collaboration',
+    cta_sub: 'Leave your info and I’ll get back to you as soon as possible.',
+    cta_close_aria: 'Close',
+    home_title_aria: 'Building design systems accelerated by AI. Designing responsive websites for every device. Designing mobile apps focused on user experience.',
+    home_desc: 'Designing financial products, securities trading platforms and complex enterprise systems, with a strength in building consistent, scalable Design Systems and creating prototypes close to the real product using Figma, HTML/CSS and AI.',
+    stat_years: 'YEARS<br>EXPERIENCE',
+    stat_projects: 'PROJECTS <br> COMPLETED',
+    badge_spin_aria: 'View projects — scroll down to Portfolio',
+    badge_spin_text: 'VIEW PROJECTS • SCROLL DOWN • VIEW PROJECTS • SCROLL DOWN •',
+    portfolio_h2: 'Featured <span class="accent">Projects</span>',
+    ai_kicker: 'Workflow',
+    ai_h2: 'AI-Assisted Design Process',
+    ai_sub: 'Combining ChatGPT and Claude throughout requirement analysis, solution exploration, consistency review and HTML/CSS prototyping.',
+    ai_step1_idx: 'STEP 01',
+    ai_step1_h4: 'Analysis &amp; Solution Exploration',
+    ai_step1_p: 'Using AI to help clarify requirements, analyze business flows and explore multiple solution directions before developing wireframes or detailed interfaces.',
+    ai_step2_idx: 'STEP 02',
+    ai_step2_h4: 'Design &amp; System Standardization',
+    ai_step2_p: 'Developing interfaces from wireframe to complete UI, while standardizing tokens, components, states and responsive patterns to ensure consistency across web and mobile.',
+    ai_step3_idx: 'STEP 03',
+    ai_step3_h4: 'Prototype &amp; Validation',
+    ai_step3_p: 'Turning designs into interactive prototypes with Figma or HTML/CSS to test flows, responsiveness and states before handing off to the development team.',
+    ai_note: '<strong>Real example:</strong> On the <strong>Tuong Ngan</strong> project — a sales, inventory and debt management system — I used AI to help analyze business logic, standardize workflows and build HTML/CSS prototypes with sample data. This allowed complex flows to be tested early, before entering full development.',
+    skills_kicker: 'Skills',
+    skills_h2: 'My Strengths',
+    services_kicker: 'Expertise',
+    services_h2: 'Key Capabilities',
+    service1_p: 'Building and standardizing Design Systems — from tokens and components to variants and shared patterns for web and mobile. The system is organized with clear naming rules, interaction states and documentation, helping design and development teams scale products more consistently.',
+    service2_p: 'Designing UX/UI for securities, financial trading products and data-heavy dashboards. My strength is organizing complex information into clear workflows, helping users track data and complete tasks faster and more accurately.',
+    service3_p: 'Combining Figma, HTML/CSS, ChatGPT and Claude to explore solutions, test interaction flows and build prototypes close to the real product. AI helps speed up the process, while UX/UI decisions are still grounded in users and business context.',
+    about_kicker: 'About',
+    about_h2: 'Turning complex requirements<br>into clear, easy-to-use experiences',
+    about_p1: 'I focus on designing websites, digital products and enterprise management systems based on real user needs and business goals.',
+    about_p2: 'My strength is building <strong>Design Systems</strong>, standardizing design tokens and components so products stay consistent, easy to develop and easy to scale.',
+    about_p3: 'I also use <strong>ChatGPT</strong> and <strong>Claude AI</strong> to support research, idea development, design review and HTML/CSS prototyping. AI helps speed up the process, while decisions on experience and product quality are still weighed against real-world context.',
+    about_p4: 'I’m looking for more opportunities to solve in-depth UX/UI problems and work with a team to create clear, useful and sustainable products.',
+    resume_kicker: 'Experience',
+    resume_h2: 'Work Experience',
+    exp1_role: 'Senior UI Designer',
+    exp1_org: 'Difisoft Vietnam JSC',
+    exp1_date: 'Dec 2019 – Present',
+    exp1_bullet1: 'Worked with Product Owners to design UI, interactions and visuals for fintech products',
+    exp1_bullet2: 'Conducted user research and built user flows, driving UX strategy for mobile &amp; web platforms',
+    exp1_bullet3: 'Designed landing pages and marketing banners for digital promotional campaigns',
+    exp_role_lead: 'Design Team Lead',
+    exp2_org: 'CAIA Technology &amp; Media JSC',
+    exp2_date: 'Apr 2014 – Dec 2019',
+    exp2_bullet1: 'Led the design team delivering website interfaces, banners and visual assets for multiple clients',
+    exp2_bullet2: 'Built complete brand identity systems: logos, brochures, business cards and brand guidelines',
+    exp3_org: 'Hurasoft JSC',
+    exp3_date: 'Apr 2012 – Apr 2014',
+    exp3_bullet1: 'Directed production of web interface designs and visual assets for corporate clients',
+    exp3_bullet2: 'Produced brand identity materials including logo systems and print collateral',
+    exp4_role: 'Web &amp; Graphic Designer',
+    exp4_org: 'Finalstyle Co., Ltd',
+    exp4_date: 'Oct 2009 – Apr 2012',
+    exp4_bullet1: 'Designed website interfaces, advertising banners and visual assets for client projects',
+    exp4_bullet2: 'Built brand identity systems and produced interactive prototypes and mockups',
+    testimonial_kicker: 'Testimonials',
+    testimonial_h2: 'What Clients Say',
+    testi1_quote: '"I consider Duc a designer who works very smart, professionally and with a high sense of responsibility. Duc grasps requirements and understands partners’ intent very quickly, even with complex business content, and from there proposes design solutions that are appropriate and highly applicable. The products Duc delivers are always carefully crafted, aesthetic, modern, and show very strong UX/UI design expertise. Notably, Duc’s work speed is very fast while still ensuring quality and attention to detail, always meeting committed deadlines. This is a reliable and highly professional partner throughout project implementation."',
+    testi1_role: 'Deputy Head of Digital Transformation — BIDV Securities JSC (BSC)',
+    testi3_quote: '"Duc is a professional, responsible designer who always ensures deadlines are met. During the rollout of the water sector’s data and datalogger management system, Duc quickly grasped business requirements and proactively proposed clear design solutions suited to real operating conditions and easy to use. The products delivered were polished, modern, highly applicable, and supported data tracking and management well. I highly value the coordination, work speed and commitment Duc showed throughout the project."',
+    testi3_role: 'Business Director, Phu My Water Supply JSC',
+    testi4_quote: '"Duc initially worked with the company as a freelance collaborator. Through professionalism, attention to detail and a dedicated customer-support mindset, Duc quickly built trust throughout the collaboration. Duc always proactively listened, grasped requirements and worked responsibly to deliver the product as expected. Based on those early positive results, the company entrusted Duc with interface design for many subsequent management systems and projects."',
+    testi4_role: 'Ba Ria - Vung Tau Water Supply JSC',
+    testi_prev_aria: 'Previous testimonial',
+    testi_next_aria: 'Next testimonial',
+    clients_kicker: 'Partners',
+    clients_h2: 'Clients We’ve Worked With',
+    contact_kicker: 'Contact',
+    contact_h2: 'Let’s Talk About a Collaboration',
+    contact_sub: 'If you’re looking for a Senior UX/UI Designer for your team, or have a product that needs clearer, more usable, more consistent design, get in touch. I’d love to hear from you.',
+    form_name_label: 'Full Name',
+    form_message_label: 'Message',
+    form_name_placeholder: 'Enter your name',
+    form_email_placeholder: 'Enter your email',
+    form_message_placeholder: 'Your message',
+    form_submit_contact: 'Send Message',
+    form_message_placeholder_cta: 'What would you like to discuss?',
+    form_submit_cta: 'Send Info'
+  };
+
+  function applyStaticI18n(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.dataset.i18n;
+      el.innerHTML = (lang === 'en' && I18N_EN[key] != null) ? I18N_EN[key] : I18N_VI_CACHE[key];
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+      const key = el.dataset.i18nAria;
+      el.setAttribute('aria-label', (lang === 'en' && I18N_EN[key] != null) ? I18N_EN[key] : I18N_VI_ARIA_CACHE[key]);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+      const key = el.dataset.i18nPlaceholder;
+      el.setAttribute('placeholder', (lang === 'en' && I18N_EN[key] != null) ? I18N_EN[key] : I18N_VI_PLACEHOLDER_CACHE[key]);
+    });
+    // the testimonial "read more" truncation caches its own copy of the
+    // (now-translated) quote text — clear that cache and recompute so the
+    // ellipsis cut-off and the toggle button's label match the new language.
+    document.querySelectorAll('.testi-quote-text').forEach(el=>{ delete el.dataset.fullText; });
+    if(typeof initTestiMore === 'function') initTestiMore();
+    // rotating hero tagline runs its own independent animation loop — restart
+    // it in the new language rather than trying to translate it in place.
+    if(typeof window.__restartTypewriterHero === 'function') window.__restartTypewriterHero();
+    // the fullscreen project lightbox is built once and reused — its
+    // close/prev/next aria-labels live outside the data-i18n system too.
+    // (Guarded via window, not the bare function name — see the note next
+    // to updateLightboxAria's definition for why.)
+    if(typeof window.__updateLightboxAria === 'function') window.__updateLightboxAria();
+  }
+
+  // ---------- EN / VI language toggle (flag buttons next to Download CV) ----------
   function setLang(lang){
     currentLang = lang;
     localStorage.setItem('site_lang', lang);
     document.documentElement.setAttribute('lang', lang);
-    document.querySelectorAll('#langSwitch button').forEach(b=>{
+    document.querySelectorAll('.lang-flags button').forEach(b=>{
       b.classList.toggle('active', b.dataset.lang === lang);
     });
+    applyStaticI18n(lang);
     renderProjectCards();
   }
-  document.querySelectorAll('#langSwitch button').forEach(b=>{
+  document.querySelectorAll('.lang-flags button').forEach(b=>{
     b.addEventListener('click', ()=>setLang(b.dataset.lang));
   });
   setLang(currentLang); // instant paint with fallback data, in the right language
@@ -2549,19 +2771,25 @@
     });
   }
 
-  // testimonial "Xem thêm": quotes truncate to 5 lines with "… Xem thêm"
-  // sitting inline right after the cut-off text (not as a separate block
-  // below), so it reads like "...một designer làm việc... Xem thêm" — the
-  // button only appears when the full quote actually overflows 5 lines.
-  (function initTestiMore(){
+  // testimonial "read more" / "Xem thêm": quotes truncate to 5 lines with the
+  // toggle button sitting inline right after the cut-off text (not as a
+  // separate block below), so it reads like "...a designer who works... Read
+  // more" — the button only appears when the full quote actually overflows 5
+  // lines. Declared as a named function (not an IIFE) so applyStaticI18n()
+  // can re-run it after a language switch to re-truncate the (now-translated)
+  // quote text and relabel the toggle button — re-running is safe/idempotent
+  // thanks to the testiMoreInit guard below (event listeners are only ever
+  // attached once per card).
+  function initTestiMore(){
     const MAX_LINES = 5;
     document.querySelectorAll('.testi-card').forEach(card=>{
       const textEl = card.querySelector('.testi-quote-text');
       const moreBtn = card.querySelector('.testi-more');
       const p = card.querySelector('.testi-quote');
       if(!textEl || !moreBtn || !p) return;
-      const fullText = textEl.textContent;
-      let expanded = false;
+      // fullText lives on the element's dataset (not a closure const) so a
+      // language switch can simply clear it and have it re-read fresh below.
+      if(!textEl.dataset.fullText) textEl.dataset.fullText = textEl.textContent;
 
       function maxHeight(){
         const cs = getComputedStyle(p);
@@ -2571,13 +2799,14 @@
       }
 
       function collapse(){
+        const fullText = textEl.dataset.fullText;
         const limit = maxHeight();
         moreBtn.classList.remove('is-visible');
         textEl.textContent = fullText;
         if(p.scrollHeight <= limit){
           return; // fits fully — no truncation needed
         }
-        moreBtn.textContent = 'Xem thêm';
+        moreBtn.textContent = currentLang === 'vi' ? 'Xem thêm' : 'Read more';
 
         // Phase 1: binary search the longest text (button still hidden)
         // that fits the line budget on its own — plain text height is
@@ -2591,7 +2820,7 @@
         let cut = lo;
         textEl.textContent = fullText.slice(0, cut).trimEnd() + '…';
 
-        // Phase 2: reveal the button. If "… Xem thêm" doesn't fit in the
+        // Phase 2: reveal the button. If "… Read more" doesn't fit in the
         // remaining space on that last line, it wraps onto its own line —
         // back off word by word until it sits flush right after the "…"
         // instead of dropping to a new line.
@@ -2605,24 +2834,29 @@
       }
 
       function expand(){
+        const fullText = textEl.dataset.fullText;
         textEl.textContent = fullText + ' ';
-        moreBtn.textContent = 'Thu gọn';
+        moreBtn.textContent = currentLang === 'vi' ? 'Thu gọn' : 'Show less';
         moreBtn.classList.add('is-visible');
       }
 
       function refresh(){
-        if(expanded) expand(); else collapse();
+        if(card.dataset.expanded === '1') expand(); else collapse();
       }
 
       refresh();
-      window.addEventListener('resize', ()=>{ if(!expanded) collapse(); });
-      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(refresh); }
-      moreBtn.addEventListener('click', ()=>{
-        expanded = !expanded;
-        refresh();
-      });
+      if(!card.dataset.testiMoreInit){
+        card.dataset.testiMoreInit = '1';
+        window.addEventListener('resize', ()=>{ if(card.dataset.expanded !== '1') collapse(); });
+        if(document.fonts && document.fonts.ready){ document.fonts.ready.then(refresh); }
+        moreBtn.addEventListener('click', ()=>{
+          card.dataset.expanded = card.dataset.expanded === '1' ? '0' : '1';
+          refresh();
+        });
+      }
     });
-  })();
+  }
+  initTestiMore();
 
   // desktop right menu panel: open/close
   const navToggle = document.getElementById('navToggle');
@@ -2752,6 +2986,23 @@
   const lbPrev = lightbox.querySelector('.pv2-lightbox-arrow.prev');
   const lbNext = lightbox.querySelector('.pv2-lightbox-arrow.next');
   const lbClose = lightbox.querySelector('.pv2-lightbox-close');
+
+  // this lightbox shell is only built once (reused for every project), so
+  // its arrow/close aria-labels — unlike the rest of the page — aren't
+  // covered by data-i18n; refresh them here instead (called once now, and
+  // again from applyStaticI18n() whenever the language switches).
+  function updateLightboxAria(){
+    if(lbClose) lbClose.setAttribute('aria-label', currentLang === 'vi' ? 'Đóng' : 'Close');
+    if(lbPrev) lbPrev.setAttribute('aria-label', currentLang === 'vi' ? 'Ảnh trước' : 'Previous image');
+    if(lbNext) lbNext.setAttribute('aria-label', currentLang === 'vi' ? 'Ảnh tiếp theo' : 'Next image');
+  }
+  updateLightboxAria();
+  // exposed on window (rather than relying on the hoisted function name)
+  // because applyStaticI18n() — defined and already invoked earlier in this
+  // script, before lbClose/lbPrev/lbNext below exist — needs a way to call
+  // this later without referencing a const that's still in its temporal
+  // dead zone at that point.
+  window.__updateLightboxAria = updateLightboxAria;
 
   let lbImages = [];
   let lbIndex = 0;
