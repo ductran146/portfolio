@@ -21,6 +21,17 @@
     --body: var(--font-sans);
     --mono: var(--font-sans);
     --sidebar-w: 320px;
+    /* Above 1512px the layout should hold its current width and center
+       itself, with the page background showing in the leftover space on
+       both sides, instead of the fixed sidebar/nav elements stretching out
+       to the real browser edges. --stage-gutter is that leftover half-width;
+       it's 0 at/under 1512px (max(0px, ...) clamps negative values), so
+       nothing changes below that width. Used directly in the left/right
+       offsets of position:fixed elements below (NOT via a max-width+contain
+       wrapper — that approach broke position:fixed's viewport-relative
+       scroll behavior, causing the sidebar to stretch the full page height). */
+    --stage-max: 1512px;
+    --stage-gutter: max(0px, calc((100vw - var(--stage-max)) / 2));
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -30,6 +41,22 @@
   ::selection{background:var(--gold);color:var(--bg);}
   img{max-width:100%;display:block;}
   :focus-visible{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 0 3px var(--focus);}
+
+  /* ---------- global scrollbar refinement ----------
+     Desktop: a thin, muted scrollbar that fits the dark UI instead of the
+     browser's bulky default (applies everywhere via the bare ::-webkit-
+     scrollbar selector, which implicitly targets any scrollable element).
+     Mobile: scrollbars are hidden entirely — touch scrolling still works
+     fine without a visible track, and it reads as more polished. */
+  html{scrollbar-width:thin;scrollbar-color:rgba(237,234,226,0.25) transparent;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:rgba(237,234,226,0.25);border-radius:8px;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(237,234,226,0.4);}
+  @media (max-width:980px){
+    html{scrollbar-width:none;}
+    ::-webkit-scrollbar{display:none;}
+  }
 
   /* background grid texture on main content */
   .main{
@@ -54,7 +81,7 @@
   /* ---------- SIDEBAR ---------- */
   .sidebar{
     width:var(--sidebar-w);flex-shrink:0;
-    position:fixed;top:0;left:0;bottom:0;
+    position:fixed;top:0;left:var(--stage-gutter);bottom:0;
     background:var(--bg-alt);
     border-right:1px solid var(--border);
     padding:0 36px 44px;
@@ -149,7 +176,7 @@
   /* floating card treatment for the profile panel (desktop only) */
   @media (min-width:981px){
     .sidebar{
-      top:var(--space-6);left:var(--space-6);bottom:var(--space-6);
+      top:var(--space-6);left:calc(var(--space-6) + var(--stage-gutter));bottom:var(--space-6);
       background:color-mix(in srgb, var(--surface) 35%, transparent);
       border:1px solid color-mix(in srgb, var(--border-strong) 35%, transparent);
       border-radius:var(--radius-2xl);
@@ -203,7 +230,7 @@
   @media (min-width:981px){
     .nav-pill{
       display:flex;flex-direction:column;gap:6px;
-      position:fixed;top:50%;right:38px;transform:translateY(-50%);
+      position:fixed;top:50%;right:calc(38px + var(--stage-gutter));transform:translateY(-50%);
       background:rgba(10,14,20,0.62);border:1px solid rgba(237,234,226,0.14);
       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
       border-radius:var(--radius-full);padding:16px 11px;z-index:250;
@@ -226,7 +253,7 @@
   @media (min-width:981px){
     .nav-fab{
       display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;
-      position:fixed;top:36px;right:48px;z-index:301;
+      position:fixed;top:36px;right:calc(48px + var(--stage-gutter));z-index:301;
       width:44px;height:44px;border-radius:50%;
       border:1px solid rgba(237,234,226,0.14);background:rgba(10,14,20,0.62);
       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -235,19 +262,27 @@
     .nav-fab:hover{border-color:var(--gold);transform:translateY(-2px);}
     .dl-cv-btn{
       display:flex;align-items:center;gap:8px;
-      position:fixed;top:36px;right:106px;z-index:301;
+      position:fixed;top:36px;right:calc(106px + var(--stage-gutter));z-index:301;
       height:44px;padding:0 20px 0 18px;border-radius:22px;
       border:1px solid rgba(237,234,226,0.14);background:rgba(10,14,20,0.62);
       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
       color:var(--text);font-family:var(--mono);font-size:12.5px;font-weight:var(--font-weight-semibold);letter-spacing:.04em;
-      cursor:pointer;transition:border-color .25s ease, transform .25s ease, color .25s ease;
+      cursor:pointer;transition:border-color .25s ease, transform .25s ease, color .25s ease, opacity .25s ease;
     }
     .dl-cv-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
     .dl-cv-btn svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0;}
     /* sits just left of the Download CV button; top offset (41px) centers
        the smaller 34px flag circles against the 44px-tall CV button/hamburger. */
     .lang-flags-desktop{
-      display:flex;position:fixed;top:41px;right:290px;z-index:301;
+      display:flex;position:fixed;top:41px;right:calc(290px + var(--stage-gutter));z-index:301;
+      transition:opacity .25s ease;
+    }
+    /* while the right-side "Menu" panel is open, the flag toggle and
+       Download CV button sit underneath it and just add clutter — fade
+       them out (mirrors .nav-fab.open's opacity/pointer-events pattern) */
+    body.nav-panel-open .lang-flags-desktop,
+    body.nav-panel-open .dl-cv-btn{
+      opacity:0;pointer-events:none;
     }
     .nav-fab span{width:16px;height:1.5px;background:var(--text);display:block;transition:all .3s ease;}
     .nav-fab.open{opacity:0;pointer-events:none;}
@@ -262,6 +297,15 @@
     .nav-panel-backdrop.open{opacity:1;pointer-events:auto;}
 
     .sb-nav{
+      /* right:0 (the TRUE viewport edge) on purpose — NOT var(--stage-gutter).
+         translateX(100%) below only shifts the panel by its OWN width, so it
+         only lands fully off-screen if its resting position starts flush
+         with the real edge. The frame inset is applied separately, via
+         transform, only in the .expanded state below — that keeps the
+         "push fully off-screen when closed" math and the "inset when open"
+         positioning from fighting each other (an earlier version put the
+         gutter in `right` directly, which left a sliver of the panel always
+         visible/half-open on wide screens once gutter > 0). */
       position:fixed;top:0;right:0;left:auto;bottom:0;transform:translateX(100%);
       flex-direction:column;flex-grow:0;gap:2px;margin-top:0;align-items:stretch;
       width:min(380px,88vw);
@@ -271,7 +315,7 @@
       box-shadow:var(--shadow-overlay);transition:transform .4s ease;
       overflow-y:auto;
     }
-    .sb-nav.expanded{transform:translateX(0);}
+    .sb-nav.expanded{transform:translateX(calc(-1 * var(--stage-gutter)));}
 
     .nav-panel-head{
       display:flex;align-items:center;justify-content:space-between;margin-bottom:44px;
@@ -316,7 +360,7 @@
   /* ---------- MAIN ---------- */
   .main{margin-left:var(--sidebar-w);flex-grow:1;min-width:0;}
   @media (max-width:980px){ .main{margin-left:0;padding-top:66px;} }
-  @media (min-width:981px){ .main{margin-left:calc(var(--sidebar-w) + var(--space-6) * 2);padding-right:96px;} }
+  @media (min-width:981px){ .main{margin-left:calc(var(--sidebar-w) + var(--space-6) * 2 + var(--stage-gutter));margin-right:var(--stage-gutter);padding-right:96px;} }
 
   .wrap{max-width:900px;margin:0 auto;padding:0 56px;position:relative;z-index:1;}
   @media (max-width:640px){ .wrap{padding:0 16px;} }
@@ -447,7 +491,15 @@
          the same amount so the left edge — the side facing the hero copy —
          stays exactly where it was; +100px pushes it further left */
       right:calc(clamp(60px, 11vw, 320px) + 100px);
-      z-index:1;
+      /* z-index:2, NOT 1: .token-showcase is a sibling of .wrap (both
+         children of .main), and .wrap itself is `position:relative;
+         z-index:1`. Equal z-index siblings stack by DOM order, and .wrap
+         comes AFTER .token-showcase in the markup — so at z-index:1 the
+         entire .wrap subtree (including the 3D backdrop canvas nested
+         inside #home, however low its own z-index) would win the tie and
+         paint over this card. Bumping to 2 makes the card unambiguously
+         win regardless of DOM order. */
+      z-index:2;
       width:420px;
       /* static — no floating/bobbing, the window itself never moves */
       transform:translateY(-50%) rotate(-3deg);
@@ -695,6 +747,60 @@
       .bw-card:first-child{border-color:var(--primary);}
     }
 
+  /* ---------- "Design System Core" — cinematic 3D backdrop ----------
+     Same fixed-viewport pattern as .home-glow-wrap right above it in the
+     markup: pinned to the screen (not any one section), so it stays put
+     and reads as one continuous backdrop while the user scrolls through
+     all 9 sections, instead of starting over per section. Dimmed low
+     enough to sit behind every section's own content, not just the hero.
+     designSystemCore() below pushes the camera into a dramatic close-up
+     and fades the whole canvas out specifically while the #services
+     section (the "Design System & Design Tokens" card) is in view, so the
+     real service cards take over without a 3D visual competing with them
+     — then reverses both once the user scrolls past. Opacity is driven
+     frame-by-frame from JS during that transition (no CSS transition here,
+     to avoid the two fighting), so this is just the resting default.
+     Turned off on mobile, same as .home-glow-wrap, to keep small screens
+     light. */
+  .dscore-canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;pointer-events:none;opacity:.28;}
+  @media (max-width:980px){ .dscore-canvas{display:none;} }
+
+  /* ---------- auto-running border light (Services cards only) ----------
+     Same soft radial "spotlight" look that was already confirmed to be the
+     right visual (previously driven by mousemove) — but now --mx/--my are
+     animated automatically via @keyframes tracing the card's perimeter, so
+     the light glides around the border on its own the moment the card is
+     hovered, with no dependency on where the cursor actually is.
+     @property registers --mx/--my as animatable <percentage> values so the
+     browser tweens the position smoothly between stops instead of jumping.
+     Scoped to .service-card only (Năng lực nổi bật) — not applied to the
+     other glass cards on the page. */
+  @property --mx{ syntax:'<percentage>'; inherits:false; initial-value:50%; }
+  @property --my{ syntax:'<percentage>'; inherits:false; initial-value:0%; }
+  .service-card{--mx:50%;--my:0%;}
+  .service-card::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+    background:radial-gradient(160px circle at var(--mx) var(--my), var(--primary), var(--color-purple) 55%, transparent 75%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite:exclude;
+    opacity:0;transition:opacity .3s ease;
+    pointer-events:none;
+  }
+  .service-card:hover::before{opacity:1;animation:dscoreBorderOrbit 3.2s linear infinite;}
+  @keyframes dscoreBorderOrbit{
+    0%{--mx:50%;--my:0%;}
+    12.5%{--mx:100%;--my:0%;}
+    25%{--mx:100%;--my:50%;}
+    37.5%{--mx:100%;--my:100%;}
+    50%{--mx:50%;--my:100%;}
+    62.5%{--mx:0%;--my:100%;}
+    75%{--mx:0%;--my:50%;}
+    87.5%{--mx:0%;--my:0%;}
+    100%{--mx:50%;--my:0%;}
+  }
+
   /* ---------- ABOUT ---------- */
   .about-body p{color:var(--text-dim);margin-bottom:18px;max-width:640px;}
   .about-body p strong{color:var(--text);font-weight:var(--font-weight-semibold);}
@@ -709,8 +815,9 @@
   .exp-list{display:flex;flex-direction:column;gap:24px;}
   .exp-item{
     display:flex;flex-direction:column;gap:16px;
-    border:1px solid var(--border);border-radius:var(--radius-xl);
-    padding:28px 26px;background:var(--surface);
+    border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-xl);
+    padding:28px 26px;background:rgba(10,14,20,0.36);
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
     transition:border-color .3s ease;
   }
   .exp-item:hover{border-color:var(--border-strong);}
@@ -739,7 +846,7 @@
 
   /* ---------- SERVICES ---------- */
   .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
-  .service-card{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:28px;padding:32px 26px;background:color-mix(in srgb, var(--surface) 50%, transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;}
+  .service-card{position:relative;overflow:hidden;border:1px solid rgba(237,234,226,0.14);border-radius:28px;padding:32px 26px;background:rgba(10,14,20,0.36);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;}
   /* mobile: same swipeable-card treatment as the AI workflow steps — each
      card becomes a horizontal scroll-snap item instead of a stacked column,
      peeking the next card's edge to hint there's more to swipe to. */
@@ -752,9 +859,7 @@
     .service-grid::-webkit-scrollbar{display:none;}
     .service-card{flex:0 0 82%;scroll-snap-align:start;}
   }
-  .service-card:hover{border-color:var(--gold);transform:translateY(-6px);box-shadow:var(--shadow-overlay);}
-  .service-card .sc-num{position:absolute;top:-10px;right:10px;font-family:var(--display);font-size:92px;font-weight:var(--font-weight-semibold);color:var(--text);opacity:.05;line-height:1;pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
-  .service-card:hover .sc-num{opacity:.1;transform:translateY(-4px);}
+  .service-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-overlay);}
   .service-card .sc-illustration{position:relative;width:100%;height:132px;margin-bottom:22px;transition:transform .3s ease;}
   .service-card .sc-illustration svg{width:100%;height:100%;display:block;}
   .service-card:hover .sc-illustration{transform:translateY(-3px);}
@@ -809,10 +914,10 @@
   .orb-label{font-family:var(--body);font-size:14px;color:var(--text-dim);}
 
   /* ---------- AI WORKFLOW ---------- */
-  .ai-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:var(--radius-2xl);overflow:hidden;}
-  .ai-step{padding:32px 26px;border-right:1px solid var(--border);background:var(--surface);transition:background .3s ease;}
+  .ai-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-2xl);overflow:hidden;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .ai-step{padding:32px 26px;border-right:1px solid rgba(237,234,226,0.14);background:rgba(10,14,20,0.36);transition:background .3s ease;}
   .ai-step:last-child{border-right:none;}
-  .ai-step:hover{background:var(--surface-2);}
+  .ai-step:hover{background:rgba(10,14,20,0.58);}
   /* mobile: each step becomes its own swipeable card in a horizontal
      scroll-snap track (peeking the next card's edge hints there's more to
      swipe to), instead of a stacked single column. */
@@ -826,9 +931,9 @@
     .ai-steps::-webkit-scrollbar{display:none;}
     .ai-step{
       flex:0 0 82%;scroll-snap-align:start;
-      border:1px solid var(--border);border-radius:var(--radius-xl);
+      border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-xl);
     }
-    .ai-step:last-child{border:1px solid var(--border);}
+    .ai-step:last-child{border:1px solid rgba(237,234,226,0.14);}
   }
   .ai-step .idx{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.1em;margin-bottom:14px;}
   .ai-step h4{font-family:var(--display);font-size:18px;font-weight:var(--font-weight-semibold);margin-bottom:10px;}
@@ -1028,7 +1133,7 @@
   .testi-nav svg{width:17px;height:17px;stroke:currentColor;}
   @media (max-width:760px){ .testi-nav{width:36px;height:36px;} .testi-nav svg{width:15px;height:15px;} }
 
-  .testi-card{flex:0 0 75%;width:75%;box-sizing:border-box;border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px 30px;background:var(--surface);scroll-snap-align:start;}
+  .testi-card{flex:0 0 75%;width:75%;box-sizing:border-box;border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-xl);padding:32px 30px;background:rgba(10,14,20,0.36);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);scroll-snap-align:start;}
   @media (max-width:760px){ .testi-card{flex-basis:78%;width:78%;padding:26px 22px;} }
   .testi-quote{font-size:14px;line-height:1.6;color:var(--text-dim);margin-bottom:24px;font-style:italic;}
   .testi-more{display:none;background:none;border:none;padding:0;margin-left:4px;color:var(--gold);font-family:var(--body);font-size:12px;font-style:normal;font-weight:var(--font-weight-regular);cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
@@ -1046,7 +1151,7 @@
   @media (max-width:480px){ .clients-grid{grid-template-columns:repeat(3,1fr);gap:10px;} .client-logo{padding:12px;} }
   .client-logo{
     aspect-ratio:1;border:1px solid rgba(237,234,226,0.14);border-radius:var(--radius-xl);
-    background:rgba(10,14,20,0.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:rgba(10,14,20,0.36);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
     display:flex;align-items:center;justify-content:center;padding:18px;
     transition:border-color .3s ease, transform .3s ease, background .3s ease;
   }
@@ -1131,6 +1236,7 @@
     .testi-disclaimer{margin-top:20px;}
     .service-card .sc-illustration{margin-bottom:16px;}
   }
+
 </style>
 </head>
 <body>
@@ -1149,11 +1255,13 @@
   </div>
 </div>
 
+<canvas class="dscore-canvas" id="dscoreCanvas" aria-hidden="true"></canvas>
+<div class="home-glow-wrap" aria-hidden="true">
+  <div class="home-glow g1"></div>
+  <div class="home-glow g2"></div>
+</div>
+
 <div class="app">
-  <div class="home-glow-wrap" aria-hidden="true">
-    <div class="home-glow g1"></div>
-    <div class="home-glow g2"></div>
-  </div>
 
   <aside class="sidebar" id="sidebar">
     <div class="sb-profile">
@@ -1558,7 +1666,6 @@
         </div>
         <div class="service-grid reveal-group">
           <div class="service-card reveal">
-            <div class="sc-num">01</div>
             <div class="sc-illustration"><svg viewBox="0 0 512 512" fill="none">
 	<path style="fill:var(--surface-2);" d="M40.123,362.515C23.486,362.515,10,349.029,10,332.393V40.123C10,23.486,23.486,10,40.123,10h431.755C488.514,10,502,23.486,502,40.123v292.27c0,16.636-13.486,30.123-30.123,30.123H40.123z"/>
 	<path style="fill:var(--surface);" d="M502,40.123C502,23.486,488.514,10,471.877,10H40.123C23.486,10,10,23.486,10,40.123v58.237h492V40.123z"/>
@@ -1583,7 +1690,6 @@
             <p data-i18n="service1_p">Xây dựng và chuẩn hóa Design System từ token, component, variant đến các pattern dùng chung cho web và mobile. Hệ thống được tổ chức với quy tắc đặt tên, trạng thái tương tác và tài liệu hướng dẫn rõ ràng, giúp đội ngũ thiết kế và phát triển mở rộng sản phẩm nhất quán hơn.</p>
           </div>
           <div class="service-card reveal">
-            <div class="sc-num">02</div>
             <div class="sc-illustration"><svg viewBox="0 0 570 512" fill="none">
 	<defs>
 		<mask id="dashDonutCut" maskUnits="userSpaceOnUse" x="0" y="0" width="570" height="512">
@@ -1620,7 +1726,6 @@
             <p data-i18n="service2_p">Thiết kế UX/UI cho các sản phẩm chứng khoán, giao dịch tài chính và dashboard nhiều dữ liệu. Thế mạnh của tôi là tổ chức thông tin phức tạp thành luồng thao tác rõ ràng, giúp người dùng theo dõi dữ liệu và thực hiện tác vụ nhanh, chính xác hơn.</p>
           </div>
           <div class="service-card reveal">
-            <div class="sc-num">03</div>
             <div class="sc-illustration"><svg viewBox="0 0 570 512" fill="none">
 	<defs>
 		<mask id="aiStarCut" maskUnits="userSpaceOnUse" x="0" y="0" width="570" height="512">
@@ -2219,7 +2324,6 @@
   document.querySelectorAll('.hs-count').forEach(el=>{
     animateCountUp(el, parseInt(el.dataset.value, 10), 1400);
   });
-
   // hero title: character-by-character typewriter that cycles through 3
   // taglines — types one out, holds, erases it, then types the next,
   // looping forever. The accessible name lives in the h1's aria-label
@@ -2386,6 +2490,262 @@
     window.__restartTypewriterHero = restart;
 
     setTimeout(typeTagline, 450);
+  })();
+
+  // ---------- "Design System Core" — cinematic 3D backdrop ----------
+  // Three.js particle/wireframe visual, a fixed full-viewport backdrop
+  // (see .dscore-canvas: position:fixed, same pattern as .home-glow-wrap)
+  // that stays put behind all 9 sections while the page scrolls. Default
+  // state is a loose "atom" cluster — a wireframe icosahedron foundation
+  // plus a network of glowing token points, dimmed low so it sits behind
+  // every section's own content. While the #services section (which opens
+  // with the "Design System & Design Tokens" card) is in view, the camera
+  // pushes in to a dramatic close-up, then the whole canvas fades out —
+  // clearing the way for the real service cards already in the HTML
+  // (.service-card, revealed by the existing scroll-reveal system) to be
+  // read without a 3D visual competing with them underneath. Scrolling
+  // back out reverses both: fades back in and pulls the camera back to
+  // the normal ambient distance. (An earlier version tried morphing the
+  // particles into labeled "layer card" shapes here instead — dropped
+  // because unlabeled dot clusters read as confusing noise, not something
+  // a client could make sense of at a glance; zoom-then-clear-the-way is
+  // more legible and lets the actual designed service cards do the
+  // explaining.) The camera distance is recalculated from the current
+  // viewport aspect ratio on every resize, so the ambient formation always
+  // stays fully visible. Loaded via dynamic import() (same pattern already
+  // used for Firebase below) so a slow/blocked CDN never blocks the rest
+  // of the page — it just skips the effect if it fails.
+  (function designSystemCore(){
+    const canvas = document.getElementById('dscoreCanvas');
+    if(!canvas) return;
+    if(window.matchMedia('(max-width: 980px)').matches) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const servicesEl = document.getElementById('services');
+    const AMBIENT_OPACITY = 0.28;
+
+    function smoothstep(edge0, edge1, x){
+      const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+      return t * t * (3 - 2 * t);
+    }
+
+    (async function init(){
+      let THREE;
+      try {
+        THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+      } catch(err){
+        console.warn('Three.js failed to load — page renders without the 3D backdrop.', err);
+        canvas.remove();
+        return;
+      }
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      } catch(err){
+        console.warn('WebGL unavailable — page renders without the 3D backdrop.', err);
+        canvas.remove();
+        return;
+      }
+
+      // brand colors, hardcoded rather than read from CSS custom properties:
+      // --primary resolves through a var() chain (design-tokens.css), which
+      // getComputedStyle does not re-resolve when read directly as a custom
+      // property, so the string handed to THREE.Color would just be
+      // "var(--color-primary-400)" — not a color that a WebGL material can
+      // use. These match --color-primary-400 / --color-purple exactly.
+      const colorPrimary = new THREE.Color('#31DF8B');
+      const colorAccent = new THREE.Color('#9B7BD4');
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      // Outermost point of the formation: particles sit on a fibonacci
+      // sphere at radius up to 2.3 * 1.15 ≈ 2.65 (see the loop below), and
+      // the whole core "breathes" up to a further 1.5% larger — so anything
+      // that needs to comfortably contain it has to clear about 2.7 in every
+      // direction, not just vertically.
+      const OBJECT_RADIUS = 2.7;
+      // Preferred rightward offset for the ambient state — used only as a
+      // CAP (see resize() below), never applied outright, so it never
+      // forces the frustum to grow and never shrinks the sphere to make
+      // room for itself. Faded to 0 during the zoom-in (see frameLoop) so
+      // the close-up centers instead of pushing off to one side.
+      const DESIRED_OFFSET_X = 2.6;
+      // A sphere that touches the frustum's top AND bottom edges exactly
+      // (FILL=1) leaves zero vertical margin to trade away for sideways
+      // room. Backing the camera off just enough to leave a small unused
+      // margin above/below buys noticeably more sideways room in return,
+      // on every aspect ratio — including narrow ones, which otherwise get
+      // none at all.
+      const FILL = 0.82;
+      let atomOffsetX = 0;
+      let baseCameraZ = 10;
+      // Full-size(ish) fit: a fixed camera distance only frames one aspect
+      // ratio correctly, so the distance is recomputed from the *current
+      // window* aspect on every resize (this sizes to the whole viewport,
+      // not any one section, since the canvas is a fixed full-page
+      // backdrop). Stored as baseCameraZ — the *ambient* distance the zoom
+      // pushes in from (see ZOOM_FACTOR below).
+      function resize(){
+        const w = window.innerWidth, h = window.innerHeight;
+        if(w === 0 || h === 0) return;
+        renderer.setSize(w, h, false);
+        const aspect = w / h;
+        camera.aspect = aspect;
+        const vFov = camera.fov * Math.PI / 180;
+        const halfHeightNeeded = (OBJECT_RADIUS / FILL) / Math.min(1, aspect);
+        baseCameraZ = halfHeightNeeded / Math.tan(vFov / 2);
+        camera.updateProjectionMatrix();
+
+        const halfWidthAvailable = halfHeightNeeded * aspect;
+        const spareMargin = Math.max(0, halfWidthAvailable - OBJECT_RADIUS);
+        atomOffsetX = Math.min(DESIRED_OFFSET_X, spareMargin);
+      }
+
+      const core = new THREE.Group();
+      scene.add(core);
+
+      // 1) wireframe icosahedron — the shared "foundation" every token /
+      // component hangs off of.
+      const coreMesh = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(1.55, 1),
+        new THREE.MeshBasicMaterial({ color: colorPrimary, wireframe: true, transparent: true, opacity: 0.32 })
+      );
+      core.add(coreMesh);
+
+      // 2) particle cloud — tokens/components scattered on a fibonacci
+      // sphere (organic spacing, not a grid) with a little radial jitter.
+      const COUNT = 220;
+      const positions = new Float32Array(COUNT * 3);
+      const pColors = new Float32Array(COUNT * 3);
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      const tmpColor = new THREE.Color();
+      for(let i = 0; i < COUNT; i++){
+        const y = 1 - (i / (COUNT - 1)) * 2;
+        const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+        const theta = golden * i;
+        const r = 2.3 * (0.85 + Math.random() * 0.3);
+        positions[i*3]   = Math.cos(theta) * radiusAtY * r;
+        positions[i*3+1] = y * r;
+        positions[i*3+2] = Math.sin(theta) * radiusAtY * r;
+        tmpColor.copy(colorPrimary).lerp(colorAccent, Math.random());
+        pColors[i*3] = tmpColor.r; pColors[i*3+1] = tmpColor.g; pColors[i*3+2] = tmpColor.b;
+      }
+      const particleGeo = new THREE.BufferGeometry();
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+      // soft circular sprite so points render as glowing dots, not squares
+      const spriteCanvas = document.createElement('canvas');
+      spriteCanvas.width = spriteCanvas.height = 64;
+      const sctx = spriteCanvas.getContext('2d');
+      const grad = sctx.createRadialGradient(32,32,0,32,32,32);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(0.4, 'rgba(255,255,255,0.6)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      sctx.fillStyle = grad;
+      sctx.fillRect(0, 0, 64, 64);
+
+      const particles = new THREE.Points(particleGeo, new THREE.PointsMaterial({
+        size: 0.09, map: new THREE.CanvasTexture(spriteCanvas), transparent: true,
+        vertexColors: true, depthWrite: false, blending: THREE.AdditiveBlending
+      }));
+      core.add(particles);
+
+      // 3) network lines — connect each particle to its 2 nearest
+      // neighbours so it reads as a graph/system, not just scattered dust.
+      const linePositions = [];
+      for(let i = 0; i < COUNT; i++){
+        let bestJ = -1, bestD = Infinity, bestJ2 = -1, bestD2 = Infinity;
+        const xi = positions[i*3], yi = positions[i*3+1], zi = positions[i*3+2];
+        for(let j = 0; j < COUNT; j++){
+          if(j === i) continue;
+          const dx = xi - positions[j*3], dy = yi - positions[j*3+1], dz = zi - positions[j*3+2];
+          const d = dx*dx + dy*dy + dz*dz;
+          if(d < bestD){ bestD2 = bestD; bestJ2 = bestJ; bestD = d; bestJ = j; }
+          else if(d < bestD2){ bestD2 = d; bestJ2 = j; }
+        }
+        if(bestJ > i) linePositions.push(xi,yi,zi, positions[bestJ*3],positions[bestJ*3+1],positions[bestJ*3+2]);
+        if(bestJ2 > i) linePositions.push(xi,yi,zi, positions[bestJ2*3],positions[bestJ2*3+1],positions[bestJ2*3+2]);
+      }
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
+      core.add(new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({ color: colorPrimary, transparent: true, opacity: 0.12 })));
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      // 0 = ambient state (everywhere): normal distance, normal opacity.
+      // 1 = zoomed all the way in AND fully faded out (only while
+      // #services is in view) so the real service cards take over.
+      // targetZoom flips instantly on scroll; zoomProgress eases toward it
+      // every frame for a smooth push-in/pull-back instead of a hard cut.
+      let targetZoom = 0;
+      let zoomProgress = 0;
+      const ZOOM_FACTOR = 0.2; // camera ends up 5x closer at full zoom-in
+
+      function applyZoom(){
+        camera.position.z = THREE.MathUtils.lerp(baseCameraZ, baseCameraZ * ZOOM_FACTOR, zoomProgress);
+        core.position.x = atomOffsetX * (1 - zoomProgress);
+        // fades out only in the back half of the push-in, so the zoom
+        // itself reads before the visual disappears
+        canvas.style.opacity = String(AMBIENT_OPACITY * (1 - smoothstep(0.55, 0.95, zoomProgress)));
+      }
+
+      if(servicesEl){
+        const focusIo = new IntersectionObserver((entries)=>{
+          entries.forEach(e=>{
+            targetZoom = e.isIntersecting ? 1 : 0;
+            if(reduceMotion){
+              zoomProgress = targetZoom;
+              applyZoom();
+              renderer.render(scene, camera);
+            }
+          });
+        }, { threshold: 0.35 });
+        focusIo.observe(servicesEl);
+      }
+
+      // pause the render loop while the tab is hidden (perf), and skip
+      // continuous animation entirely under prefers-reduced-motion —
+      // render one static frame instead, same accessibility pattern as
+      // the hero typewriter. The zoom/fade above still updates once,
+      // instantly, on scroll even with reduced motion — that's a discrete
+      // state change, not the kind of continuous motion the setting
+      // guards against.
+      let running = false, rafId = null, startTime = performance.now();
+      function frameLoop(now){
+        if(!running) return;
+        const t = (now - startTime) / 1000;
+        zoomProgress += (targetZoom - zoomProgress) * 0.045;
+        applyZoom();
+        core.rotation.y = t * 0.12;
+        core.rotation.x = Math.sin(t * 0.18) * 0.12;
+        core.scale.setScalar(1 + Math.sin(t * 0.6) * 0.015);
+        renderer.render(scene, camera);
+        rafId = requestAnimationFrame(frameLoop);
+      }
+
+      if(reduceMotion){
+        renderer.render(scene, camera);
+      } else {
+        running = true;
+        startTime = performance.now();
+        rafId = requestAnimationFrame(frameLoop);
+        document.addEventListener('visibilitychange', function(){
+          if(document.hidden){
+            running = false;
+            if(rafId) cancelAnimationFrame(rafId);
+          } else if(!running){
+            running = true;
+            startTime = performance.now();
+            rafId = requestAnimationFrame(frameLoop);
+          }
+        });
+      }
+    })();
   })();
 
   // ============================================================
@@ -2869,12 +3229,14 @@
     sbNavEl.classList.add('expanded');
     navBackdrop.classList.add('open');
     navToggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-panel-open');
   }
   function closeNavPanel(){
     navToggle.classList.remove('open');
     sbNavEl.classList.remove('expanded');
     navBackdrop.classList.remove('open');
     navToggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-panel-open');
   }
   if(navToggle && sbNavEl){
     navToggle.addEventListener('click', ()=>{
