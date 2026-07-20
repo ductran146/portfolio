@@ -2484,12 +2484,24 @@
       taglineIndex = 0;
       while(line1.firstChild) line1.removeChild(line1.firstChild);
       while(line2.firstChild) line2.removeChild(line2.firstChild);
+      void line1.offsetHeight; // force layout flush — same Safari repaint fix as clearAndAdvance()
       line1.appendChild(cursor);
       setTimeout(typeTagline, 300);
     }
     window.__restartTypewriterHero = restart;
 
-    setTimeout(typeTagline, 450);
+    // NOTE: no setTimeout(typeTagline, ...) call here on purpose. setLang()
+    // is always called once, unconditionally, right after this IIFE runs
+    // (see the bottom of the script) — and setLang() always calls
+    // window.__restartTypewriterHero(), i.e. restart() above, which starts
+    // the very first typing cycle itself. An earlier version *also* kicked
+    // off typeTagline() directly from here, so every single page load (and
+    // every language switch) raced two independent typing cycles against
+    // each other for their first ~150ms — visible as the very first letter
+    // briefly appearing twice ("BBuilding", "XXây dựng") before the older
+    // cycle lost the race and the correct one took over. Letting setLang()
+    // be the single source of truth for starting the cycle removes the
+    // race entirely instead of just papering over the visual symptom.
   })();
 
   // ---------- "Design System Core" — cinematic 3D backdrop ----------
