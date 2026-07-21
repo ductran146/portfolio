@@ -1069,9 +1069,15 @@
   }
   .pv2-lightbox-link svg{width:15px;height:15px;stroke:currentColor;flex-shrink:0;}
 
-  /* image frame — fixed 16:10 ratio, arrows collapsed inside it (hover-reveal) */
+  /* image frame — fixed 16:10 ratio, arrows collapsed inside it (hover-reveal).
+     align-self:center overrides the parent's align-items:stretch: without it,
+     the frame's height gets stretched to match the row (the panel's height),
+     which fights the aspect-ratio and forces object-fit:cover to zoom/crop
+     the image to fill a box that's no longer actually 16:10. With stretch
+     turned off here, height is derived purely from aspect-ratio (against the
+     flex-grown width), capped by max-height as a safety ceiling only. */
   .pv2-lightbox-frame{
-    position:relative;flex:1;aspect-ratio:16/10;max-height:100%;
+    position:relative;flex:1;align-self:center;aspect-ratio:16/10;max-height:100%;
     border:1px solid var(--border-strong);border-radius:var(--radius-lg,16px);
     background:var(--surface-2);overflow:hidden;
   }
