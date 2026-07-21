@@ -467,7 +467,7 @@ function renderLinkRows(){
       <select class="link-type">
         ${LINK_TYPES.map(t => `<option value="${t}" ${t === l.type ? 'selected' : ''}>${t}</option>`).join('')}
       </select>
-      <input type="url" class="link-url" value="${escAttr(l.url || '')}" placeholder="https://...">
+      <input type="text" class="link-url" value="${escAttr(l.url || '')}" placeholder="https://... hoặc images/...">
       <button type="button" class="btn btn-sm btn-danger">×</button>
     </div>`).join('');
   wrap.querySelectorAll('.link-row').forEach(row => {
