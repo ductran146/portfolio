@@ -98,9 +98,21 @@
   .img-list{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
   .img-item{position:relative;width:88px;height:66px;}
   .img-item img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);}
-  .img-item button{
+  .img-item button.img-remove{
     position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
     background:var(--danger);color:#fff;border:none;font-size:12px;cursor:pointer;line-height:1;
+  }
+  .img-item .img-move{
+    position:absolute;bottom:-6px;width:18px;height:18px;border-radius:50%;
+    background:var(--primary,#5b5bd6);color:#fff;border:none;font-size:11px;cursor:pointer;line-height:1;
+    display:flex;align-items:center;justify-content:center;padding:0;
+  }
+  .img-item .img-move[disabled]{opacity:.25;cursor:default;}
+  .img-item .img-move-left{left:-6px;}
+  .img-item .img-move-right{right:-6px;}
+  .img-item .img-cover-badge{
+    position:absolute;top:-6px;left:-6px;background:var(--primary,#5b5bd6);color:#fff;
+    font-size:9px;line-height:1;padding:2px 4px;border-radius:3px;font-weight:600;
   }
   .img-drop{
     border:1px dashed var(--border-strong);border-radius:var(--radius-md);padding:16px;text-align:center;
@@ -380,16 +392,40 @@ function closeForm(){
 
 function renderImgList(){
   const imgList = document.getElementById('imgList');
+  // Ảnh đầu tiên trong mảng luôn là ảnh cover/thumbnail hiển thị ở trang chủ,
+  // nên thêm nút "◁ ▷" để đổi vị trí ảnh (kéo-thả không có sẵn trong UI này)
+  // và một nhãn "Cover" trên ảnh đầu để người dùng biết ảnh nào đang là cover.
   imgList.innerHTML = formImages.map((src, i) => `
     <div class="img-item" data-i="${i}">
+      ${i === 0 ? '<span class="img-cover-badge">Cover</span>' : ''}
       <img src="${escAttr(src)}" alt="">
-      <button type="button" title="Remove">×</button>
+      <button type="button" class="img-remove" title="Remove">×</button>
+      <button type="button" class="img-move img-move-left" title="Move left" ${i === 0 ? 'disabled' : ''}>◁</button>
+      <button type="button" class="img-move img-move-right" title="Move right" ${i === formImages.length - 1 ? 'disabled' : ''}>▷</button>
     </div>`).join('');
-  imgList.querySelectorAll('.img-item button').forEach(btn => {
+  imgList.querySelectorAll('.img-item .img-remove').forEach(btn => {
     btn.addEventListener('click', () => {
       const i = parseInt(btn.closest('.img-item').dataset.i, 10);
       formImages.splice(i, 1);
       renderImgList();
+    });
+  });
+  imgList.querySelectorAll('.img-item .img-move-left').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.closest('.img-item').dataset.i, 10);
+      if (i > 0) {
+        [formImages[i - 1], formImages[i]] = [formImages[i], formImages[i - 1]];
+        renderImgList();
+      }
+    });
+  });
+  imgList.querySelectorAll('.img-item .img-move-right').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.closest('.img-item').dataset.i, 10);
+      if (i < formImages.length - 1) {
+        [formImages[i + 1], formImages[i]] = [formImages[i], formImages[i + 1]];
+        renderImgList();
+      }
     });
   });
 }
@@ -398,17 +434,29 @@ document.getElementById('imgInput').addEventListener('change', async (e) => {
   const files = Array.from(e.target.files || []);
   if (files.length === 0) return;
   const status = document.getElementById('uploadStatus');
-  status.textContent = `Uploading ${files.length} image(s)…`;
-  for (const file of files) {
+  // Track failures explicitly instead of letting the final message just say
+  // "Done." regardless — a per-file catch() below lets the loop keep going
+  // after one upload fails (so one bad file doesn't block the rest), but
+  // without this list the failure was silently overwritten by the next
+  // file's status text and never surfaced once the loop finished (exactly
+  // what happened with 1.jpg on the San Xin Ha project: 8/9 uploaded, the
+  // failure flashed by unnoticed, and it still ended on "Done.").
+  const failed = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    status.textContent = `Uploading ${i + 1}/${files.length}: ${file.name}…`;
     try {
       const url = await uploadToCloudinary(file);
       formImages.push(url);
       renderImgList();
     } catch (err) {
-      status.textContent = 'Upload failed: ' + err.message;
+      failed.push(file.name);
     }
   }
-  status.textContent = 'Done.';
+  status.textContent = failed.length === 0
+    ? `Done — uploaded ${files.length}/${files.length}.`
+    : `Uploaded ${files.length - failed.length}/${files.length}. Failed: ${failed.join(', ')} — please try re-adding ${failed.length === 1 ? 'it' : 'them'}.`;
+  status.style.color = failed.length === 0 ? '' : '#e5484d';
   e.target.value = '';
 });
 
